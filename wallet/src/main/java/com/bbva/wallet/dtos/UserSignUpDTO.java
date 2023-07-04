@@ -1,6 +1,5 @@
 package com.bbva.wallet.dtos;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,9 +7,16 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class JwtAuthResponse{
-    private  String token;
+@NoArgsConstructor
+public class UserSignUpDTO {
+
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+
 
 }
+
+
