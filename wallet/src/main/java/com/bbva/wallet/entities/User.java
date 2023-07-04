@@ -3,6 +3,7 @@ package com.bbva.wallet.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,6 +31,7 @@ public class User {
     private String lastName;
 
     @NotNull
+    @Email
     @Column(unique = true)
     private String email;
 
@@ -53,6 +55,4 @@ public class User {
 
     @JsonIgnore
     private boolean softDelete;
-
-
 }
