@@ -1,14 +1,14 @@
 package com.bbva.wallet.entities;
 
-
+import com.bbva.wallet.enums.Currency;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import jakarta.validation.constraints.NotNull;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,31 +17,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
-public class User {
-
+@Table(name = "accounts")
+public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private String firstName;
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
     @NotNull
-    private String lastName;
+    private Double transactionLimit;
 
     @NotNull
-    @Email
-    @Column(unique = true)
-    private String email;
-
-    @JsonIgnore
-    @NotNull
-    private String password;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    private Double balance;
 
     @JsonIgnore
     @CreationTimestamp
@@ -55,4 +45,9 @@ public class User {
 
     @JsonIgnore
     private boolean softDelete;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }
