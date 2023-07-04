@@ -1,46 +1,43 @@
 package com.bbva.wallet.entities;
 
-import com.bbva.wallet.enums.RoleName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jdk.jfr.Timestamp;
 import lombok.*;
-
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "roles")
-public class Role implements Serializable {
 
+@Table(name = "fixed_term_deposits")
+
+public class FixedTermDeposits implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
-    private RoleName name;
+    private double amount;
 
-    private String description;
+    @OneToOne // ó @OneToMany
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account account;
 
+    @NotNull
+    private double interest;
 
-    @JsonIgnore
     @CreationTimestamp
     @NotNull
     private LocalDateTime creationDate;
 
-    @JsonIgnore
-    @UpdateTimestamp
+    @Timestamp
     @NotNull
-    private LocalDateTime updateDate;
-
-
+    private LocalDateTime closingDate;
 }
