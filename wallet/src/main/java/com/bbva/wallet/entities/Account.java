@@ -33,6 +33,10 @@ public class Account implements Serializable {
     @NotNull
     private Double balance;
 
+    @NotNull
+    @Column(unique = true)
+    private String cbu;
+
     @JsonIgnore
     @CreationTimestamp
     @NotNull
