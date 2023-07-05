@@ -27,6 +27,7 @@ public class Role implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @NotNull
+    @Column(unique = true)
     private RoleName name;
 
     private String description;
@@ -34,12 +35,10 @@ public class Role implements Serializable {
 
     @JsonIgnore
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @JsonIgnore
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime updateDate;
 
 
