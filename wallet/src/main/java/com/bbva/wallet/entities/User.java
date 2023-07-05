@@ -52,12 +52,10 @@ public class User implements Serializable, UserDetails {
 
     @JsonIgnore
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @JsonIgnore
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime updateDate;
 
     @JsonIgnore
@@ -71,7 +69,7 @@ public class User implements Serializable, UserDetails {
 
     @JsonIgnore
     @Override
-    public String getPassword() { return password; }
+    public @NotNull String getPassword() { return password; }
 
     @JsonIgnore
     @Override
