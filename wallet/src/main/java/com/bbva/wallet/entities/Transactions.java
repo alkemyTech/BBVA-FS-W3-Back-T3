@@ -1,13 +1,11 @@
 package com.bbva.wallet.entities;
 
 
-import com.bbva.wallet.enums.TypeName;
+import com.bbva.wallet.enums.TypeTransaction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
@@ -31,7 +29,7 @@ public class Transactions implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TypeName type;
+    private TypeTransaction type;
 
     private String description;
 
