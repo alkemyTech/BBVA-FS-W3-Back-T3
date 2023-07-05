@@ -2,8 +2,15 @@ package com.bbva.wallet.services;
 
 
 import com.bbva.wallet.dtos.UserSignUpDTO;
+import com.bbva.wallet.entities.Account;
+import com.bbva.wallet.entities.Role;
 import com.bbva.wallet.entities.User;
+import com.bbva.wallet.enums.Currency;
+import com.bbva.wallet.enums.RoleName;
+import com.bbva.wallet.repositories.AccountRepository;
+import com.bbva.wallet.repositories.RoleRepository;
 import com.bbva.wallet.repositories.UserRepository;
+import com.bbva.wallet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,27 +19,52 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final Utils utils;
 
 
 
 
-    public User signUp (UserSignUpDTO userSignUpDto) {
-       var user = User.builder()
-               .firstName(userSignUpDto.getFirstName())
-               .lastName(userSignUpDto.getLastName())
-               .email(userSignUpDto.getEmail())
-               .password((passwordEncoder.encode(userSignUpDto.getPassword())))
-               .build();
+    public User signUp(UserSignUpDTO userSignUpDto) {
+        //Role role = new Role(RoleName.USER);
+        var role = Role.builder()
+                .name(RoleName.USER)
+                .build();
+        roleRepository.save(role);
 
-       userRepository.save(user);
+        var user = User.builder()
+                .firstName(userSignUpDto.getFirstName())
+                .lastName(userSignUpDto.getLastName())
+                .email(userSignUpDto.getEmail())
+                .password(passwordEncoder.encode(userSignUpDto.getPassword()))
+                .role(role)
+                .build();
 
+        userRepository.save(user);
+        Account accountPesos = Account.builder()
+                .currency(Currency.ARS)
+                .transactionLimit(300_000.0)
+                .balance(0.0)
+                .user(user)
+                .cbu(utils.generateRandomCbu())
+                .build();
+        Account accountDolares = Account.builder()
+                .currency(Currency.USD)
+                .transactionLimit(1_000.0)
+                .balance(0.0)
+                .user(user)
+                .cbu(utils.generateRandomCbu())
+                .build();
+
+        accountRepository.save(accountPesos);
+        accountRepository.save(accountDolares);
 
         return user;
 
 
     }
-
 
 
 }
