@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import com.bbva.wallet.dtos.JwtAuthResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -24,5 +23,5 @@ public class AuthenticationService {
         return userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
     }
 
-    
+
 }
