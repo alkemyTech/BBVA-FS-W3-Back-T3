@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "c9365916-d534-40f5-9d8d-9b0c17a07654",
+		"_postman_id": "eca9983e-fd55-4412-95f3-041ec8a000ea",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3286645"
+		"_exporter_id": "27902180"
 	},
 	"item": [
 		{
@@ -17,7 +17,16 @@
 		},
 		{
 			"name": "/accounts",
-			"item": []
+			"item": [
+				{
+					"name": "Get Account de UserID",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
