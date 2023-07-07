@@ -1,7 +1,7 @@
 package com.bbva.wallet.controllers;
 
-
 import com.bbva.wallet.dtos.UserLogInDTO;
+import com.bbva.wallet.dtos.UserSignUpDTO;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.services.AuthenticationService;
 import jakarta.validation.Valid;
@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
+
+    private final AuthenticationService authenticationService;
+
+    @PostMapping("/register")
+    public ResponseEntity<User> singUp (@Valid @RequestBody UserSignUpDTO userDto){
+        return ResponseEntity.ok(authenticationService.signUp(userDto));
+    }
 
 private final AuthenticationService authenticationService;
 

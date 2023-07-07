@@ -26,7 +26,7 @@ public class FixedTermDeposits implements Serializable{
     @NotNull
     private double amount;
 
-    @OneToOne // ó @OneToMany
+    @ManyToOne
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 

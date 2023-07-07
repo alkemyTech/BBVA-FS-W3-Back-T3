@@ -1,6 +1,6 @@
 package com.bbva.wallet.enums;
 
-public enum TypeName {
+public enum TypeTransaction {
     INCOME,
     PAYMENT,
     DEPOSIT
