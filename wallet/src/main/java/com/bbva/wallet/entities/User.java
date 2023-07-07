@@ -70,7 +70,6 @@ public class User implements Serializable, UserDetails {
 
     @JsonIgnore
     @Override
-    @NotNull
     public String getPassword() { return password; }
 
     @JsonIgnore
