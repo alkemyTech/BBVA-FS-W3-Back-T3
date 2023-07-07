@@ -1,10 +1,11 @@
 {
 	"info": {
-		"_postman_id": "c9365916-d534-40f5-9d8d-9b0c17a07654",
+		"_postman_id": "a825563d-3c43-41f5-b251-1768c8b530fd",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3286645"
+		"_exporter_id": "20774953",
+		"_collection_link": "https://www.postman.com/bold-equinox-852207/workspace/damian-pereyra-workspace/collection/20774953-a825563d-3c43-41f5-b251-1768c8b530fd?action=share&creator=20774953&source=collection_link"
 	},
 	"item": [
 		{
@@ -13,7 +14,19 @@
 		},
 		{
 			"name": "/users",
-			"item": []
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "/accounts",
