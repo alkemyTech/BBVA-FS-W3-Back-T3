@@ -1,5 +1,5 @@
 insert into t3_wallet.roles
-    (name,description)
+    (name,description,creation_date,update_date)
 values
-    ('ADMIN',"Administrador"),
-    ('USER',"Usuario");
+    ('ADMIN',"Administrador,",CURDATE(),CURDATE()),
+    ('USER',"Usuario",CURDATE(),CURDATE());
