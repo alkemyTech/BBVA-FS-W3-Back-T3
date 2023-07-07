@@ -1,3 +1,11 @@
 package com.bbva.wallet.dtos;
 
-public record JwtAuthResponse(String token) {}
+import lombok.*;
+
+
+@Data
+@Builder
+
+public class JwtAuthResponse {
+    
+}
