@@ -1,5 +1,6 @@
 package com.bbva.wallet.controllers;
 
+import com.bbva.wallet.dtos.JwtAuthResponse;
 import com.bbva.wallet.dtos.UserLogInDTO;
 import com.bbva.wallet.dtos.UserSignUpDTO;
 import com.bbva.wallet.entities.User;
@@ -25,7 +26,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> LogIn (@Valid @RequestBody UserLogInDTO userDto){
+    public ResponseEntity<JwtAuthResponse> LogIn (@Valid @RequestBody UserLogInDTO userDto){
         return ResponseEntity.ok(authenticationService.logIn(userDto));
     }
 

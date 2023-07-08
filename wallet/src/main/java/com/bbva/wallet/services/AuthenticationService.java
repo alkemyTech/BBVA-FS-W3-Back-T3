@@ -1,5 +1,6 @@
 package com.bbva.wallet.services;
 
+import com.bbva.wallet.dtos.JwtAuthResponse;
 import com.bbva.wallet.dtos.UserLogInDTO;
 import com.bbva.wallet.dtos.UserSignUpDTO;
 import com.bbva.wallet.entities.User;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     private final UserRepository userRepository;
@@ -31,16 +33,19 @@ public class AuthenticationService {
 
 
     public User signUp(UserSignUpDTO userSignUpDto) {
-        //Role role = new Role(RoleName.USER);
+        Role role;
+        RoleName roleName = (userSignUpDto.getRoleName() != null ? userSignUpDto.getRoleName() : RoleName.USER);
 
-        var role = roleRepository.findByName
-                (userSignUpDto.getRoleName() != null ? userSignUpDto.getRoleName() : RoleName.USER)
-                        .orElse(Role.builder()
-                        .name(RoleName.USER)
-                        .description("Usuario")
-                        .build());
-
-        roleRepository.save(role);
+        var roleOptional = roleRepository.findByName(roleName);
+        if (roleOptional.isEmpty()) {
+            role = Role.builder()
+                    .name(userSignUpDto.getRoleName())
+                    .description(userSignUpDto.getRoleName().toString().toLowerCase())
+                    .build();
+            roleRepository.save(role);
+        } else {
+            role = roleOptional.get();
+        } //todo: mejorar creacion de nuevo rol sino existe (endpoint)
 
         var user = User.builder()
                 .firstName(userSignUpDto.getFirstName())
@@ -74,10 +79,12 @@ public class AuthenticationService {
 
     }
 
-    public User logIn(UserLogInDTO userLogInDTO) {
+    public JwtAuthResponse logIn(UserLogInDTO userLogInDTO) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userLogInDTO.getEmail(), userLogInDTO.getPassword()));
-        return userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var user = userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var token = jwtService.generateToken(user);
+        return new JwtAuthResponse(token);
     }
 }
