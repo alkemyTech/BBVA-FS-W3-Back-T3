@@ -1,9 +1,5 @@
 package com.bbva.wallet.dtos;
 
-import com.bbva.wallet.entities.Account;
-import com.bbva.wallet.enums.TypeTransaction;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

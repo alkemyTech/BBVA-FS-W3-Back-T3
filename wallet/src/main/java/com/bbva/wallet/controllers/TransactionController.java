@@ -2,8 +2,6 @@ package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.TransactionDto;
 import com.bbva.wallet.entities.Transactions;
-import com.bbva.wallet.entities.User;
-import com.bbva.wallet.enums.TypeTransaction;
 import com.bbva.wallet.services.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,17 +17,7 @@ public class TransactionController {
 
     @PostMapping("/sendArs")
     public ResponseEntity <Transactions> sendArs(@RequestBody TransactionDto transactionDto) {
-     User user = new User();
-     var income = Transactions.builder()
-             .amount(transactionDto.getAmount())
-             .transactionDate(transactionDto.getTransactionDate())
-             .type(TypeTransaction.INCOME)
-             .accountId(transactionDto.getDestinationAccountId());
-     var payment = Transactions.builder()
-             .amount(transactionDto.getAmount())
-             .transactionDate(transactionDto.getTransactionDate())
-             .type(TypeTransaction.PAYMENT)
-             .accountId(transactionDto.getSourceAccountId());
-        return ResponseEntity.ok("Transferenicia exitosa");
+        var transactions = transactionService.sendArs(transactionDto);
+        return ResponseEntity.ok(transactions);
     }
 }
