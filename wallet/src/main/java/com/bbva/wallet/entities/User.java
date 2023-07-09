@@ -52,12 +52,10 @@ public class User implements Serializable, UserDetails {
 
     @JsonIgnore
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @JsonIgnore
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime updateDate;
 
     @JsonIgnore
