@@ -1,5 +1,6 @@
 package com.bbva.wallet.services;
 
+import com.bbva.wallet.dtos.JwtAuthResponse;
 import com.bbva.wallet.dtos.UserLogInDTO;
 import com.bbva.wallet.dtos.UserSignUpDTO;
 import com.bbva.wallet.entities.User;
@@ -7,9 +8,7 @@ import com.bbva.wallet.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import com.bbva.wallet.entities.Role;
-
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.repositories.RoleRepository;
@@ -23,9 +22,10 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final JwtService jwtService;
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
 
     public User signUp(UserSignUpDTO userSignUpDto) {
         //Role role = new Role(RoleName.USER);
@@ -55,10 +55,13 @@ public class AuthenticationService {
         return user;
     }
 
-    public User logIn(UserLogInDTO userLogInDTO) {
+    public JwtAuthResponse logIn(UserLogInDTO userLogInDTO) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userLogInDTO.getEmail(), userLogInDTO.getPassword()));
-        return userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var user = userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthResponse.builder().token(jwt).user(user).build();
     }
 }
