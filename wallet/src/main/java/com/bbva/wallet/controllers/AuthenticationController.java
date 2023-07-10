@@ -27,7 +27,4 @@ public class AuthenticationController {
         JwtAuthResponse response = authenticationService.logIn(userDto);
         return ResponseEntity.ok(response);
     }
-
-
-
 }
