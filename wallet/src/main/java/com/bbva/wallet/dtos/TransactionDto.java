@@ -16,8 +16,5 @@ public class TransactionDto {
     private Long destinationAccountId;
     @NotNull
     private Double amount;
-    @NotNull
-    private Long sourceAccountId;
-    @NotNull
     private LocalDateTime transactionDate;
 }

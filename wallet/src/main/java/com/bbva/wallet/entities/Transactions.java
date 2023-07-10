@@ -39,7 +39,6 @@ public class Transactions implements Serializable {
 
     @JsonIgnore
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime transactionDate;
 
 

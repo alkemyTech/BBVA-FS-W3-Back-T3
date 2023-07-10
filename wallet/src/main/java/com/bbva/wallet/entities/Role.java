@@ -34,12 +34,10 @@ public class Role implements Serializable {
 
     @JsonIgnore
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @JsonIgnore
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime updateDate;
 
 
