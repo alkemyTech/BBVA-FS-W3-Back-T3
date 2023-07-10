@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "38e1d4ae-1902-4e20-aa36-5ec52be3cd6c",
+		"_postman_id": "f9833f47-c95d-4a59-a465-17206923176d",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -41,12 +41,33 @@
 				},
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();",
+									"pm.environment.set('token', res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\" : \"rsp@gmail.com\",\n    \"password\" : \"123\"\n}",
+							"raw": "{\n    \"email\" : \"spr@roby.com\",\n    \"password\" : \"123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,40 +93,50 @@
 		},
 		{
 			"name": "/users",
+			"item": []
+		},
+		{
+			"name": "/accounts",
 			"item": [
 				{
-					"name": "Delete user",
+					"name": "Crear Account",
 					"request": {
-						"method": "DELETE",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currency\" : \"ARS\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:8080/users/1",
+							"raw": "http://localhost:8080/accounts",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"users",
-								"1"
+								"accounts"
 							]
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "New Request",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
 				}
 			]
-		},
-		{
-			"name": "/accounts",
-			"item": []
 		}
 	]
 }
