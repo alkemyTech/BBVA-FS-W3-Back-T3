@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "291a7c0c-624d-49d1-b262-2451bf510b0a",
+		"_postman_id": "38e1d4ae-1902-4e20-aa36-5ec52be3cd6c",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -72,7 +72,36 @@
 		},
 		{
 			"name": "/users",
-			"item": []
+			"item": [
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "/accounts",
