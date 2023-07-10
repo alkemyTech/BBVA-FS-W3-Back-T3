@@ -1,16 +1,12 @@
 package com.bbva.wallet.services;
 
 import com.bbva.wallet.entities.Account;
-import com.bbva.wallet.repositories.AccountRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import java.util.List;
-@Service
-@RequiredArgsConstructor
-public class AccountService {
-    private final AccountRepository accountRepository;
+import com.bbva.wallet.entities.User;
+import com.bbva.wallet.enums.Currency;
 
-    public List<Account> getUserAccounts(Long userId) {
-        return accountRepository.findByUserId(userId);
-    }
+import java.util.List;
+public interface AccountService {
+    List<Account> getUserAccounts(Long userId);
+
+    Account createAccount(Currency currency, User userLoggedIn);
 }
