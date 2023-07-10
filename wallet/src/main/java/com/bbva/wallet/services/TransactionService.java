@@ -6,5 +6,5 @@ import com.bbva.wallet.entities.Transactions;
 import com.bbva.wallet.entities.User;
 
 public interface TransactionService {
-    void sendArs(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount);
+    void send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount);
 }

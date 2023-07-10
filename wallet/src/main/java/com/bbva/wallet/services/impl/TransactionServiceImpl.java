@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class TransactionServiceImpl implements TransactionService {
     private TransactionsRepository transactionsRepository;
 
-    public void sendArs(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ){
+    public void send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ){
         if (sourceAccount.getUser().equals(destinationAccount.getUser())){
             return; // TODO: Agregar excepcion de que no se puede transferir a uno mismo
         }
@@ -24,6 +24,10 @@ public class TransactionServiceImpl implements TransactionService {
         if (transactionDto.getAmount() > sourceAccount.getBalance()){
             return; // TODO: Agregar excepcion de que no se puede transferir mas de lo que se tiene
         }
+        if(!sourceAccount.getCurrency().equals(destinationAccount.getCurrency())){
+            return ;// TODO: Agregar excepcion de que no se puede transferir a una cuenta de distinta moneda
+        }
+
 
         var income = Transactions.builder()
                 .amount(transactionDto.getAmount())

@@ -22,12 +22,22 @@ public class TransactionController {
     private final AccountService accountService;
 
     @PostMapping("/sendArs")
-    public ResponseEntity <Transactions> sendArs(@RequestBody TransactionDto transactionDto) {
+    public ResponseEntity <Void> sendArs(@RequestBody TransactionDto transactionDto) {
+        return send(transactionDto,Currency.ARS);
+    }
+
+    @PostMapping("/sendUsd")
+    public ResponseEntity <Void> sendUsd(@RequestBody TransactionDto transactionDto) {
+        return send(transactionDto,Currency.USD);
+    }
+
+
+    private ResponseEntity <Void> send(@RequestBody TransactionDto transactionDto,Currency currency) {
         // User userLoggedIn = (User) authentication.getPrincipal();
-        Account sourceAccount = accountService.findByUserIdAndCurrency(11L, Currency.ARS).orElse(null); //TODO: agregar excepcion si no tiene cuenta en ARS
+        Account sourceAccount = accountService.findByUserIdAndCurrency(2L, currency).orElse(null); //TODO: agregar excepcion si no tiene cuenta en ARS
         Account destinationAccount = accountService.findById(transactionDto.getDestinationAccountId()).orElse(null); //TODO: Agregar excepcion si no existe la cuenta
 
-        transactionService.sendArs(transactionDto, sourceAccount, destinationAccount);
+        transactionService.send(transactionDto, sourceAccount, destinationAccount);
         accountService.saveAll(List.of(sourceAccount, destinationAccount));
         return ResponseEntity.ok().build();
     }
