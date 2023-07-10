@@ -12,7 +12,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public void deleteById(Long id) {
+    public void softDeleteById(Long id) {
         var user = userRepository.findById(id);
         user.ifPresent(value -> {
             value.setSoftDelete(true);

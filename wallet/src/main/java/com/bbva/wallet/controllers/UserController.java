@@ -16,8 +16,8 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable Long id ) {
-        userService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id ) {
+        userService.softDeleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
