@@ -2,8 +2,10 @@ package com.bbva.wallet.services.impl;
 
 import com.bbva.wallet.dtos.TransactionDto;
 import com.bbva.wallet.entities.Account;
-import com.bbva.wallet.entities.Transactions;
+import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.TypeTransaction;
+import com.bbva.wallet.exeptions.ErrorCodes;
+import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.repositories.TransactionsRepository;
 import com.bbva.wallet.services.TransactionService;
 import lombok.AllArgsConstructor;
@@ -14,27 +16,27 @@ import org.springframework.stereotype.Service;
 public class TransactionServiceImpl implements TransactionService {
     private TransactionsRepository transactionsRepository;
 
-    public void send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ){
+    public void send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ) throws TransactionException {
         if (sourceAccount.getUser().equals(destinationAccount.getUser())){
-            return; // TODO: Agregar excepcion de que no se puede transferir a uno mismo
+            throw new TransactionException("No se puede transferir a uno mismo", ErrorCodes.SAME_ACCOUNT_TRANSFER);
         }
         if (transactionDto.getAmount() > sourceAccount.getTransactionLimit()){
-            return; // TODO: Agregar excepcion de que no se puede transferir mas del limite
+            throw new TransactionException("No se puede transferir mas del limite", ErrorCodes.OVER_LIMIT);
         }
         if (transactionDto.getAmount() > sourceAccount.getBalance()){
-            return; // TODO: Agregar excepcion de que no se puede transferir mas de lo que se tiene
+            throw new TransactionException("No se puede transferir mas de lo que se tiene", ErrorCodes.INSUFFICIENT_FOUNDS);
         }
         if(!sourceAccount.getCurrency().equals(destinationAccount.getCurrency())){
-            return ;// TODO: Agregar excepcion de que no se puede transferir a una cuenta de distinta moneda
+            throw new TransactionException("No se puede transferir a una cuenta de distinta moneda", ErrorCodes.DIFFERENT_CURRENCY);
         }
 
 
-        var income = Transactions.builder()
+        var income = Transaction.builder()
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.INCOME)
                 .account(destinationAccount)
                 .build();
-        var payment = Transactions.builder()
+        var payment = Transaction.builder()
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.PAYMENT)
                 .account(sourceAccount)

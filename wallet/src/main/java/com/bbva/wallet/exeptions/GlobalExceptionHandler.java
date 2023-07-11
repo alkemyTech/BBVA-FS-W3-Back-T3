@@ -49,4 +49,25 @@ public class GlobalExceptionHandler {
         response.setData(field);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+    @ExceptionHandler(TransactionException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Response<String>> handleValidationException(TransactionException ex) {
+        Response<String> response = new Response<>();
+        response.addError(ex.getErrorCodes());
+        response.setMessage(ex.getMessage());
+        response.setData("");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(AccountException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Response<String>> handleValidationException(AccountException ex) {
+        Response<String> response = new Response<>();
+        response.addError(ex.getErrorCodes());
+        response.setMessage(ex.getMessage());
+        response.setData(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+
 }
