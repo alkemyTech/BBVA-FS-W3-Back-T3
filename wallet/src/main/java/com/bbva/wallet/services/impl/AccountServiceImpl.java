@@ -1,6 +1,7 @@
 package com.bbva.wallet.services.impl;
 
 import com.bbva.wallet.entities.Account;
+
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.repositories.AccountRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -38,5 +40,15 @@ public class AccountServiceImpl implements AccountService {
                 .build();
         accountRepository.save(newAccount);
         return newAccount;
+
+
+    @Override
+    public void softDeleteByUserId(Long id) {
+        List<Account> accounts = accountRepository.findByUserId(id);
+        accounts.forEach(account -> {
+            account.setSoftDelete(true);
+            accountRepository.save(account);
+        });
+
     }
 }
