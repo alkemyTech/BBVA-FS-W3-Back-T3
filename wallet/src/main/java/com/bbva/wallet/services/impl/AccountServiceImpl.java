@@ -24,4 +24,12 @@ public class AccountServiceImpl implements AccountService {
     public void saveAll(List<Account> accounts) {
         accountRepository.saveAll(accounts);
     }
+    @Override
+    public void softDeleteByUserId(Long id) {
+        List<Account> accounts = accountRepository.findByUserId(id);
+        accounts.forEach(account -> {
+            account.setSoftDelete(true);
+            accountRepository.save(account);
+        });
+    }
 }

@@ -45,19 +45,18 @@ public class User implements Serializable, UserDetails {
     @NotNull
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     @JoinColumn(name = "role_id")
+    @JsonIgnore
     private Role role;
 
     @JsonIgnore
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @JsonIgnore
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime updateDate;
 
     @JsonIgnore
