@@ -13,4 +13,7 @@ public class AccountService {
     public List<Account> getUserAccounts(Long userId) {
         return accountRepository.findByUserId(userId);
     }
+
+    void softDeleteByUserId(Long id);
+
 }
