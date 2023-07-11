@@ -45,7 +45,7 @@ public class User implements Serializable, UserDetails {
     @NotNull
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     @JoinColumn(name = "role_id")
     @JsonIgnore
@@ -53,12 +53,10 @@ public class User implements Serializable, UserDetails {
 
     @JsonIgnore
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @JsonIgnore
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime updateDate;
 
     @JsonIgnore
@@ -72,7 +70,6 @@ public class User implements Serializable, UserDetails {
 
     @JsonIgnore
     @Override
-    @NotNull
     public String getPassword() { return password; }
 
     @JsonIgnore
