@@ -1,17 +1,22 @@
 package com.bbva.wallet.services;
 
-
+import com.bbva.wallet.dtos.JwtAuthResponse;
+import com.bbva.wallet.dtos.UserLogInDTO;
 import com.bbva.wallet.dtos.UserSignUpDTO;
+import com.bbva.wallet.entities.User;
+import com.bbva.wallet.repositories.UserRepository;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Role;
-import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.repositories.AccountRepository;
 import com.bbva.wallet.repositories.RoleRepository;
-import com.bbva.wallet.repositories.UserRepository;
 import com.bbva.wallet.utils.Utils;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +25,10 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
     private final Utils utils;
 
 
@@ -69,5 +76,13 @@ public class AuthenticationService {
 
     }
 
+    public JwtAuthResponse logIn(UserLogInDTO userLogInDTO) {
 
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userLogInDTO.getEmail(), userLogInDTO.getPassword()));
+        var user = userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthResponse.builder().token(jwt).user(user).build();
+    }
 }
