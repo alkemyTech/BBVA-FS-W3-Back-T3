@@ -27,6 +27,7 @@ public class Role implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @NotNull
+    @Column(unique = true)
     private RoleName name;
 
     private String description;

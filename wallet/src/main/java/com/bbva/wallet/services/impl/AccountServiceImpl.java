@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -23,5 +24,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void saveAll(List<Account> accounts) {
         accountRepository.saveAll(accounts);
+    }
+}
+    @Override
+    public void softDeleteByUserId(Long id) {
+        List<Account> accounts = accountRepository.findByUserId(id);
+        accounts.forEach(account -> {
+            account.setSoftDelete(true);
+            accountRepository.save(account);
+        });
     }
 }
