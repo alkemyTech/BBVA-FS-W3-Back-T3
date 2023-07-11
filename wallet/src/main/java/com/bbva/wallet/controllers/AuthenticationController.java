@@ -26,5 +26,6 @@ public class AuthenticationController {
     public ResponseEntity<JwtAuthResponse> LogIn (@Valid @RequestBody UserLogInDTO userDto){
         JwtAuthResponse response = authenticationService.logIn(userDto);
         return ResponseEntity.ok(response);
+
     }
 }
