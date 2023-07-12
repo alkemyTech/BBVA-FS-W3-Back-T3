@@ -35,11 +35,13 @@ public class TransactionServiceImpl implements TransactionService {
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.INCOME)
                 .account(destinationAccount)
+                .description( transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
         var payment = Transaction.builder()
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.PAYMENT)
                 .account(sourceAccount)
+                .description( transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
 
         transactionsRepository.save(income);
