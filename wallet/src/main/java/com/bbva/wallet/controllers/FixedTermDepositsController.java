@@ -8,6 +8,7 @@ import com.bbva.wallet.entities.User;
 import com.bbva.wallet.services.FixedTermDepositsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,8 @@ public class FixedTermDepositsController {
     private final AccountService accountService;
     @Value("${fixedTermDeposit.currency}")
     private Currency currency;
+
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<Void> createFixedTermDeposit(@Valid @RequestBody FixedTermDepositsDTO fixedTermDepositsDTO,
     Authentication authentication) {

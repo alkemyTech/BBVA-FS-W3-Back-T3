@@ -15,6 +15,14 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @RestController
 public class GlobalExceptionHandler {
 
+    private ResponseEntity<Response<String>> getResponseResponseEntity(String error, String field, ErrorCodes errorCode, HttpStatus httpStatus) {
+        Response<String> response = new Response<>();
+        response.addError(errorCode);
+        response.setMessage(String.format("The field %s isn't valid: [%s]", field, error));
+        response.setData(field);
+        return ResponseEntity.status(httpStatus).body(response);
+    }
+
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Response<String>> handleValidationException(SQLIntegrityConstraintViolationException ex) {
@@ -48,5 +56,15 @@ public class GlobalExceptionHandler {
         response.setMessage(String.format("The field %s isn't valid: [%s]", field, error));
         response.setData(field);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(BaseException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Response<String>> handleValidationException(BaseException ex) {
+        Response<String> response = new Response<>();
+        response.addError(ex.getErrorCodes());
+        response.setMessage(ex.getMessage());
+        response.setData("");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }
