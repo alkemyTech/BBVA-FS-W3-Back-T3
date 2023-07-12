@@ -11,5 +11,6 @@ public interface AccountService {
     void saveAll(List<Account> accounts);
     void softDeleteByUserId(Long id);
     List<Account> getUserAccounts(Long userId);
+    Account save(Account account);
 
 }

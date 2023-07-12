@@ -39,4 +39,7 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.save(account);
         });
     }
+
+   public Account save(Account account){return accountRepository.save(account);}
+
 }
