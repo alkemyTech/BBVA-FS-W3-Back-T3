@@ -33,4 +33,7 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.save(account);
         });
     }
+    public void save(Account sourceAccount){
+        accountRepository.save(sourceAccount);
+    }
 }
