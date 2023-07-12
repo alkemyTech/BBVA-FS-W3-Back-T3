@@ -11,6 +11,8 @@ import com.bbva.wallet.services.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
@@ -52,5 +54,13 @@ public class TransactionServiceImpl implements TransactionService {
         destinationAccount.setBalance(newBalanceIncome);
         sourceAccount.setBalance(newBalancePayment);
         return payment;
+    }
+
+    public Optional<Transaction> findById(Long Id) {
+        return transactionsRepository.findById(Id);
+    }
+
+    public Transaction save( Transaction transaction ){
+        return transactionsRepository.save(transaction);
     }
 }
