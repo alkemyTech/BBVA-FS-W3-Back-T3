@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "a94bb30e-8ac3-4bf8-b37f-ff9566516c5d",
+		"_postman_id": "7200c2d8-269b-410c-b20f-85de5f212da3",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "16198497"
-
+		"_exporter_id": "20774953",
+		"_collection_link": "https://www.postman.com/bold-equinox-852207/workspace/damian-pereyra-workspace/collection/20774953-7200c2d8-269b-410c-b20f-85de5f212da3?action=share&creator=20774953&source=collection_link"
 	},
 	"item": [
 		{
@@ -96,13 +96,6 @@
 			"name": "/users",
 			"item": [
 				{
-					"name": "List Users",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": ""
-
 					"name": "Delete user",
 					"event": [
 						{
@@ -139,7 +132,25 @@
 								"users",
 								"16"
 							]
-
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
 						}
 					},
 					"response": []
