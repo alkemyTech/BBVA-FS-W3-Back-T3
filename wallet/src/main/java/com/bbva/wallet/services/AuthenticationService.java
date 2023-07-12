@@ -81,7 +81,8 @@ public class AuthenticationService {
         accountRepository.save(accountDolares);
 
         var jwt = jwtService.generateToken(user);
-        return JwtAuthResponse.builder().token(jwt).build();
+        return JwtAuthResponse.builder().token(jwt).user(user).build();
+
     }
 
     public JwtAuthResponse logIn(UserLogInDTO userLogInDTO) {

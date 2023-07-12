@@ -35,7 +35,7 @@ public class Transactions implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private Role accountId;
+    private Account accountId;
 
     @JsonIgnore
     @UpdateTimestamp
