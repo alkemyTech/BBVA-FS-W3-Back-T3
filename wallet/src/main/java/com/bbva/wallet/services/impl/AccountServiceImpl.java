@@ -33,17 +33,17 @@ public class AccountServiceImpl implements AccountService {
     public Account createAccount(Currency currency, User userLoggedIn) {
         Account newAccount = Account.builder()
                 .currency(currency)
-                .transactionLimit( currency.equals(Currency.ARS) ? transactionLimitArs : transactionLimitUsd )
+                .transactionLimit(currency.equals(Currency.ARS) ? transactionLimitArs : transactionLimitUsd)
                 .balance(initialBalance)
                 .user(userLoggedIn)
                 .cbu(utils.generateRandomCbu())
                 .build();
         accountRepository.save(newAccount);
         return newAccount;
-
+    }
 
     @Override
-    public void softDeleteByUserId(Long id) {
+    public void softDeleteByUserId (Long id){
         List<Account> accounts = accountRepository.findByUserId(id);
         accounts.forEach(account -> {
             account.setSoftDelete(true);
