@@ -6,12 +6,13 @@ import com.bbva.wallet.dtos.UserSignUpDTO;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.repositories.UserRepository;
 import com.bbva.wallet.entities.Account;
-import com.bbva.wallet.entities.Role;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.repositories.AccountRepository;
 import com.bbva.wallet.repositories.RoleRepository;
 import com.bbva.wallet.utils.Utils;
+import org.springframework.beans.factory.annotation.Value;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,14 +31,21 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final Utils utils;
+    @Value("${transaction.limit.ars}")
+    private double transactionLimitArs;
 
+    @Value("${transaction.limit.usd}")
+    private double transactionLimitUsd;
 
-    public User signUp(UserSignUpDTO userSignUpDto) {
+    @Value("${initial.balance}")
+    private double initialBalance;
+
+    public JwtAuthResponse signUp(UserSignUpDTO userSignUpDto) {
         //Role role = new Role(RoleName.USER);
 
         var role = roleRepository.findByName
-                (userSignUpDto.getRoleName() != null ? userSignUpDto.getRoleName() : RoleName.USER)
-                        .orElse(Role.builder()
+                        (userSignUpDto.getRoleName() != null ? userSignUpDto.getRoleName() : RoleName.USER)
+                .orElse(com.bbva.wallet.entities.Role.builder()
                         .name(RoleName.USER)
                         .description("Usuario")
                         .build());
@@ -55,15 +63,15 @@ public class AuthenticationService {
         userRepository.save(user);
         Account accountPesos = Account.builder()
                 .currency(Currency.ARS)
-                .transactionLimit(300_000.0)
-                .balance(0.0)
+                .transactionLimit(transactionLimitArs)
+                .balance(initialBalance)
                 .user(user)
                 .cbu(utils.generateRandomCbu())
                 .build();
         Account accountDolares = Account.builder()
                 .currency(Currency.USD)
-                .transactionLimit(1_000.0)
-                .balance(0.0)
+                .transactionLimit(transactionLimitUsd)
+                .balance(initialBalance)
                 .user(user)
                 .cbu(utils.generateRandomCbu())
                 .build();
@@ -71,7 +79,8 @@ public class AuthenticationService {
         accountRepository.save(accountPesos);
         accountRepository.save(accountDolares);
 
-        return user;
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthResponse.builder().token(jwt).build();
 
 
     }
