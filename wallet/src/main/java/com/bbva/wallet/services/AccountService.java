@@ -11,5 +11,5 @@ public interface AccountService {
     Optional<Account> findByUserIdAndCurrency(Long id, Currency currency);
     void saveAll(List<Account> accounts);
     void softDeleteByUserId(Long id);
-
+    void save(Account sourceAccount);
 }
