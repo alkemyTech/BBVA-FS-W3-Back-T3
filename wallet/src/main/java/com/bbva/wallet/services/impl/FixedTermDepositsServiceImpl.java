@@ -21,14 +21,12 @@ public class FixedTermDepositsServiceImpl implements FixedTermDepositsService {
     @Value("${fixedTermDeposit.dailyInterestRate}")
     private Double dailyInterestRate;
     @Override
-    public void createFixedTermDeposit(FixedTermDepositsDTO fixedTermDepositsDTO, Account account) throws FixedTermDepositsException {
+    public FixedTermDeposits createFixedTermDeposit(FixedTermDepositsDTO fixedTermDepositsDTO, Account account) throws FixedTermDepositsException {
         if (account.getBalance() <= fixedTermDepositsDTO.getAmount()) {
             throw new FixedTermDepositsException("Insufficient funds", ErrorCodes.INSUFFICIENT_FUNDS); //todo: create a custom exception
         }
         if (LocalDateTime.now().plusDays(30L).isAfter(fixedTermDepositsDTO.getClosingDate())) {
             throw new FixedTermDepositsException("The closing date must be at least 30 days from now", ErrorCodes.INVALID_CLOSING_DATE);
-            //todo:
-            // create a custom exception
         }
 
         FixedTermDeposits fixedTermDeposits = FixedTermDeposits.builder()
@@ -41,5 +39,6 @@ public class FixedTermDepositsServiceImpl implements FixedTermDepositsService {
         account.setBalance(account.getBalance() - fixedTermDepositsDTO.getAmount());
 
         fixedTermDepositsRepository.save(fixedTermDeposits);
+        return fixedTermDeposits;
     }
 }

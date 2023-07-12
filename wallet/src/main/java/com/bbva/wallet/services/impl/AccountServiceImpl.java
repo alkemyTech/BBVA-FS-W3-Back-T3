@@ -6,6 +6,8 @@ import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+
 import com.bbva.wallet.enums.Currency;
 
 @Service
@@ -21,8 +23,8 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.save(account);
         });
     }
-    public Account getAccountByUserIdAndCurrency(Long userId, Currency currency) {
-        return accountRepository.findByUserIdAndCurrency(userId, currency).orElse(null); //Todo: exception
+    public Optional<Account> getAccountByUserIdAndCurrency(Long userId, Currency currency) {
+        return accountRepository.findByUserIdAndCurrency(userId, currency);
     }
 
     public void save(Account account) {
