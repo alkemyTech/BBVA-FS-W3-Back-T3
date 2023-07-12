@@ -1,14 +1,11 @@
 package com.bbva.wallet.services.impl;
 
-import com.bbva.wallet.entities.Account;
-import com.bbva.wallet.entities.Transaction;
+
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.repositories.UserRepository;
 import com.bbva.wallet.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Optional;
 
 @Service
