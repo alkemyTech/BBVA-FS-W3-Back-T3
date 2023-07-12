@@ -1,5 +1,6 @@
 package com.bbva.wallet.controllers;
 
+
 import com.bbva.wallet.dtos.BalanceDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.User;
@@ -7,9 +8,7 @@ import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Optional;
 
 @RestController
@@ -30,4 +29,6 @@ public class AccountController {
         return ResponseEntity.ok(balanceDTO);
     }
 
+
+    }
 }

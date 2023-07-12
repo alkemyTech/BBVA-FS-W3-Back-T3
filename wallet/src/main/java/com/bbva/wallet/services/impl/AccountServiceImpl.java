@@ -23,6 +23,10 @@ public class AccountServiceImpl implements AccountService {
     private final TransactionsRepository transactionsRepository;
     private final FixedTermDepositsRepository fixedTermDepositsRepository;
 
+    public List<Account> getUserAccounts(Long userId) {
+        return accountRepository.findByUserId(userId);
+    }
+
     public Optional<Account> findById(Long Id) {
         return accountRepository.findById(Id);
     }
