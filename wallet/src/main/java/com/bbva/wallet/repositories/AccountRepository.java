@@ -12,4 +12,3 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByUserIdAndCurrency(Long id, Currency currency);
   List<Account> findByUserId(Long id);
 }
-

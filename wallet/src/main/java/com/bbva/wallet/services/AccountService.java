@@ -1,6 +1,5 @@
 package com.bbva.wallet.services;
 
-
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.enums.Currency;
 import java.util.List;
@@ -11,5 +10,6 @@ public interface AccountService {
     Optional<Account> findByUserIdAndCurrency(Long id, Currency currency);
     void saveAll(List<Account> accounts);
     void softDeleteByUserId(Long id);
+    List<Account> getUserAccounts(Long userId);
 
 }
