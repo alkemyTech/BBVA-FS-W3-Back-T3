@@ -14,6 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
+
     public Optional<Account> findById(Long Id) {
         return accountRepository.findById(Id);
     }
@@ -25,6 +26,11 @@ public class AccountServiceImpl implements AccountService {
     public void saveAll(List<Account> accounts) {
         accountRepository.saveAll(accounts);
     }
+
+    public List<Account> getUserAccounts(Long userId) {
+        return accountRepository.findByUserId(userId);
+    }
+
     @Override
     public void softDeleteByUserId(Long id) {
         List<Account> accounts = accountRepository.findByUserId(id);

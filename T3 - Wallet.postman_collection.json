@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "6e1569a3-ffb0-4f12-ac0a-980dc2506061",
+		"_postman_id": "7da93996-2a20-4f0e-9282-8e6321d13a0d",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "24624731"
+		"_exporter_id": "16198497"
 	},
 	"item": [
 		{
@@ -139,7 +139,50 @@
 		},
 		{
 			"name": "/accounts",
-			"item": []
+			"item": [
+				{
+					"name": "Get Account de UserID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/accounts/11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"accounts",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "/transactions",
