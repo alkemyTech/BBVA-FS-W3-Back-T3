@@ -1,6 +1,7 @@
 package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.FixedTermDepositsDTO;
+import com.bbva.wallet.dtos.FixedTermDepositsSimulationDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.FixedTermDeposits;
 import com.bbva.wallet.enums.Currency;
@@ -43,9 +44,16 @@ public class FixedTermDepositsController {
         FixedTermDeposits fixedTermDeposits = fixedTermDepositsService.createFixedTermDeposit(
                 fixedTermDepositsDTO,
                 account);
-        //save con el nuevo balance
+
         accountService.save(account);
 
         return ResponseEntity.ok().body(fixedTermDeposits);
+    }
+
+    @SneakyThrows
+    @PostMapping("/simulate")
+    public ResponseEntity<FixedTermDepositsSimulationDTO> simulateFixedTermDeposit(@Valid @RequestBody FixedTermDepositsDTO fixedTermDepositsDTO) {
+        FixedTermDepositsSimulationDTO simulation = fixedTermDepositsService.createFixedTermDeposit(fixedTermDepositsDTO);
+        return ResponseEntity.ok().body(simulation);
     }
 }
