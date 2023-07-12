@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     private final AccountService accountService;
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<Iterable<Account>> getUserAccounts(@PathVariable Long userId) {
+        Iterable<Account> entities = accountService.getUserAccounts(userId);
+        return ResponseEntity.ok(entities);
+    }
+
     @PostMapping
     public ResponseEntity<Account> createAccount(@Valid @RequestBody AccountDTO accountDTO, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();

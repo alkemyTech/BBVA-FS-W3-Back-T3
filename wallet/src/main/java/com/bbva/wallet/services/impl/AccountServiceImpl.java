@@ -1,7 +1,6 @@
 package com.bbva.wallet.services.impl;
 
 import com.bbva.wallet.entities.Account;
-
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.repositories.AccountRepository;
@@ -49,6 +48,5 @@ public class AccountServiceImpl implements AccountService {
             account.setSoftDelete(true);
             accountRepository.save(account);
         });
-
     }
 }
