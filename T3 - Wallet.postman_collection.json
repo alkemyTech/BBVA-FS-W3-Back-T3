@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "377b5e7c-848b-40a5-b985-b73a1483b223",
+		"_postman_id": "bd733458-b6f4-4e4f-ba7f-2428c4fd4f74",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -255,6 +255,84 @@
 							"path": [
 								"transactions",
 								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentUSD",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currency\": \"USD\",\r\n    \"amount\" : 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/transactions/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"transactions",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentARS",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currency\": \"ARS\",\r\n    \"amount\" : 600\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/transactions/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"transactions",
+								"payment"
 							]
 						}
 					},
