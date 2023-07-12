@@ -20,6 +20,12 @@ public class AccountServiceImpl implements AccountService {
     public Optional<Account> findByUserIdAndCurrency(Long id, Currency currency) {
         return accountRepository.findByUserIdAndCurrency(id, currency);
     }
+
+    @Override
+    public List<Account> findByUserId(Long userId){
+        return accountRepository.findByUserId(userId);
+    }
+
     @Override
     public void saveAll(List<Account> accounts) {
         accountRepository.saveAll(accounts);
