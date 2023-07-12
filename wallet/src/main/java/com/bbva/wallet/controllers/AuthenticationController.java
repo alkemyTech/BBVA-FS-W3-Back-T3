@@ -21,7 +21,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> singUp (@Valid @RequestBody UserSignUpDTO userDto){
+    public ResponseEntity<JwtAuthResponse> singUp (@Valid @RequestBody UserSignUpDTO userDto){
         return ResponseEntity.ok(authenticationService.signUp(userDto));
     }
 
