@@ -3,7 +3,9 @@ package com.bbva.wallet.controllers;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
