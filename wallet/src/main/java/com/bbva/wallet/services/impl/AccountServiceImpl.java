@@ -11,6 +11,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
+    public List<Account> getUserAccounts(Long userId) {
+        return accountRepository.findByUserId(userId);
+    }
 
     @Override
     public void softDeleteByUserId(Long id) {
