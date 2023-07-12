@@ -1,15 +1,12 @@
 package com.bbva.wallet.controllers;
 
-import com.bbva.wallet.dtos.DepositCreatedDTO;
-import com.bbva.wallet.dtos.DepositDTO;
-import com.bbva.wallet.dtos.TransactionDTO;
+import com.bbva.wallet.dtos.*;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.exeptions.AccountException;
 import com.bbva.wallet.exeptions.ErrorCodes;
-import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.AccountService;
 import com.bbva.wallet.services.TransactionService;
 import jakarta.validation.Valid;
@@ -51,8 +48,9 @@ public class TransactionController {
     }
 
     //------------------------------------------Deposit--------------------------------------------------------------
+    @SneakyThrows
     @PostMapping("/deposit")
-    public ResponseEntity<DepositCreatedDTO> deposit(@RequestBody DepositDTO depositDTO, Authentication authentication) throws AccountException, TransactionException {
+    public ResponseEntity<DepositCreatedDTO> deposit(@RequestBody DepositDTO depositDTO, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Account sourceAccount = accountService.findByUserIdAndCurrency(userLoggedIn.getId(), depositDTO.getCurrency())
                 .orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + depositDTO.getCurrency(), ErrorCodes.ACCOUNT_DOESNT_EXIST));
@@ -61,5 +59,18 @@ public class TransactionController {
 
         DepositCreatedDTO depositCreatedDTO = transactionService.deposit(sourceAccount, depositDTO.getAmount());
         return ResponseEntity.ok(depositCreatedDTO);
+    }
+    //------------------------------------------Payment--------------------------------------------------------------
+    @SneakyThrows
+    @PostMapping("/payment")
+    public ResponseEntity<PaymentCreatedDTO> payment(@RequestBody PaymentDTO paymentDTO, Authentication authentication) {
+        User userLoggedIn = (User) authentication.getPrincipal();
+        Account sourceAccount = accountService.findByUserIdAndCurrency(userLoggedIn.getId(), paymentDTO.getCurrency())
+                .orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + paymentDTO.getCurrency(), ErrorCodes.ACCOUNT_DOESNT_EXIST));
+
+        accountService.save(sourceAccount);
+
+        PaymentCreatedDTO paymentCreatedDTO = transactionService.payment(sourceAccount, paymentDTO.getAmount());
+        return ResponseEntity.ok(paymentCreatedDTO);
     }
 }
