@@ -14,10 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -47,4 +45,14 @@ public class TransactionController {
         accountService.saveAll(List.of(sourceAccount, destinationAccount));
         return ResponseEntity.ok(payment);
     }
+
+    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
+    @GetMapping
+    public ResponseEntity<Iterable<Transaction>> getUserAccounts( Authentication authentication) {//TODO: Login con id variable
+        User userLoggedIn = (User) authentication.getPrincipal();
+        List<Account> accounts = accountService.findByUserId(userLoggedIn.getId());
+        Iterable<Transaction> transactions = transactionService.getUserTransaction(accounts);
+        return ResponseEntity.ok(transactions);
+    }
+
 }

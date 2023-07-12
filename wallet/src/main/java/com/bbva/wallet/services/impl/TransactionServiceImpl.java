@@ -4,17 +4,19 @@ import com.bbva.wallet.dtos.TransactionDto;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.TypeTransaction;
+import com.bbva.wallet.repositories.TransactionRepository;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
-import com.bbva.wallet.repositories.TransactionsRepository;
 import com.bbva.wallet.services.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
-    private TransactionsRepository transactionsRepository;
+    private final TransactionRepository transactionRepository;
 
     public Transaction send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ) throws TransactionException {
         if (sourceAccount.getUser().equals(destinationAccount.getUser())){
@@ -30,7 +32,6 @@ public class TransactionServiceImpl implements TransactionService {
             throw new TransactionException("No se puede transferir a una cuenta de distinta moneda", ErrorCodes.DIFFERENT_CURRENCY);
         }
 
-
         var income = Transaction.builder()
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.INCOME)
@@ -44,13 +45,22 @@ public class TransactionServiceImpl implements TransactionService {
                 .description( transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
 
-        transactionsRepository.save(income);
-        transactionsRepository.save(payment);
+        transactionRepository.save(income);
+        transactionRepository.save(payment);
 
         Double newBalanceIncome = destinationAccount.getBalance() + transactionDto.getAmount();
         Double newBalancePayment = sourceAccount.getBalance() - transactionDto.getAmount();
         destinationAccount.setBalance(newBalanceIncome);
         sourceAccount.setBalance(newBalancePayment);
         return payment;
+    }
+
+    @Override
+    public List<Transaction> getUserTransaction(List<Account> accounts) {
+        List<Transaction> transactions = new ArrayList<Transaction>();
+        accounts.forEach(account -> {
+            transactions.addAll(transactionRepository.findByAccountId(account.getId()));
+        });
+        return transactions;
     }
 }
