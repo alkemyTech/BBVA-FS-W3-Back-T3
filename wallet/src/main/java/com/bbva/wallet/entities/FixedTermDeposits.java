@@ -34,10 +34,8 @@ public class FixedTermDeposits implements Serializable{
     private double interest;
 
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @Timestamp
-    @NotNull
     private LocalDateTime closingDate;
 }
