@@ -1,11 +1,11 @@
 {
 	"info": {
+
 		"_postman_id": "7200c2d8-269b-410c-b20f-85de5f212da3",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20774953",
-		"_collection_link": "https://www.postman.com/bold-equinox-852207/workspace/damian-pereyra-workspace/collection/20774953-7200c2d8-269b-410c-b20f-85de5f212da3?action=share&creator=20774953&source=collection_link"
+		"_exporter_id": "20774953"
 	},
 	"item": [
 		{
@@ -159,7 +159,50 @@
 		},
 		{
 			"name": "/accounts",
-			"item": []
+			"item": [
+				{
+					"name": "Get Account de UserID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/accounts/11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"accounts",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
