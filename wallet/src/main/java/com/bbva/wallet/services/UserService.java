@@ -7,4 +7,6 @@ public interface UserService {
     void softDeleteById(Long id);
 
     Optional<User> findById(Long id);
+
+    User save(User user);
 }
