@@ -4,7 +4,9 @@ import com.bbva.wallet.entities.User;
 import com.bbva.wallet.repositories.UserRepository;
 import com.bbva.wallet.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
@@ -16,6 +18,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<User> getAllUser(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override
