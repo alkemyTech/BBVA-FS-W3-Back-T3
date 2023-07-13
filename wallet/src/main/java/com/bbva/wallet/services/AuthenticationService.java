@@ -29,7 +29,7 @@ public class AuthenticationService {
         //Role role = new Role(RoleName.USER);
 
         var role = roleRepository.findByName
-                        (userSignUpDto.getRoleName() != null ? userSignUpDto.getRole() : RoleName.USER)
+                        (userSignUpDto.getRole() != null ? userSignUpDto.getRole() : RoleName.USER)
                 .orElse(Role.builder()
                         .name(RoleName.USER)
                         .description("Usuario")
