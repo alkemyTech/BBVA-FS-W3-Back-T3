@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\":\"roby\",\n    \"lastName\":\"spr\",\n    \"email\":\"rsp@gmail.com\",\n    \"password\":\"123\"\n}",
+							"raw": "{\n    \"firstName\":\"Lionel\",\n    \"lastName\":\"Messi\",\n    \"email\":\"mundial@gmail.com\",\n    \"password\":\"123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -67,7 +67,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\" : \"spr@lea.com\",\n    \"password\" : \"123\"\n}",
+							"raw": "{\n    \"email\" : \"mundial@gmail.com\",\n    \"password\" : \"123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -88,6 +88,29 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -136,10 +159,39 @@
 					"response": []
 				},
 				{
-					"name": "Get users",
+					"name": "Get user",
 					"request": {
 						"method": "GET",
 						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Edit user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\":\"Neyen\",\r\n    \"lastName\":\"Ergis\",\r\n    \"password\":\"gatin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"8"
+							]
+						}
 					},
 					"response": []
 				}
