@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class TransactionServiceImpl implements TransactionService {
     private TransactionsRepository transactionsRepository;
 
-    public void send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ) throws TransactionException {
+    public Transaction send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ) throws TransactionException {
         if (sourceAccount.getUser().equals(destinationAccount.getUser())){
             throw new TransactionException("No se puede transferir a uno mismo", ErrorCodes.SAME_ACCOUNT_TRANSFER);
         }
@@ -35,11 +35,13 @@ public class TransactionServiceImpl implements TransactionService {
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.INCOME)
                 .account(destinationAccount)
+                .description( transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
         var payment = Transaction.builder()
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.PAYMENT)
                 .account(sourceAccount)
+                .description( transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
 
         transactionsRepository.save(income);
@@ -49,5 +51,6 @@ public class TransactionServiceImpl implements TransactionService {
         Double newBalancePayment = sourceAccount.getBalance() - transactionDto.getAmount();
         destinationAccount.setBalance(newBalanceIncome);
         sourceAccount.setBalance(newBalancePayment);
+        return payment;
     }
 }

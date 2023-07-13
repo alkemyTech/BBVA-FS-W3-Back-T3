@@ -31,7 +31,7 @@ public class UserSignUpDTO {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private RoleName roleName;
+    private RoleName role;
 
 
 }

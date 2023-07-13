@@ -7,10 +7,7 @@ import com.bbva.wallet.services.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -21,12 +18,15 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<JwtAuthResponse> singUp (@Valid @RequestBody UserSignUpDTO userDto){
+
         return ResponseEntity.ok(authenticationService.signUp(userDto));
+
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> LogIn (@Valid @RequestBody UserLogInDTO userDto){
-        return ResponseEntity.ok(authenticationService.logIn(userDto));
-    }
+        JwtAuthResponse response = authenticationService.logIn(userDto);
+        return ResponseEntity.ok(response);
 
+    }
 }
