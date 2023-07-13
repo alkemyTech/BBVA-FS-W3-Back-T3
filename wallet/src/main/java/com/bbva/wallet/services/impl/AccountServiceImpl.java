@@ -53,6 +53,10 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(newAccount);
         return newAccount;
     }
+    @Override
+    public List<Account> findByUserId(Long userId) {
+            return accountRepository.findByUserId(userId);
+        }
 
     @Override
     public void softDeleteByUserId (Long id){

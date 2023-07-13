@@ -10,6 +10,8 @@ import com.bbva.wallet.repositories.TransactionsRepository;
 import com.bbva.wallet.services.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -52,5 +54,13 @@ public class TransactionServiceImpl implements TransactionService {
         destinationAccount.setBalance(newBalanceIncome);
         sourceAccount.setBalance(newBalancePayment);
         return payment;
+    }
+    @Override
+    public List<Transaction> getUserTransaction(List<Account> accounts) {
+        List<Transaction> transactions = new ArrayList<Transaction>();
+        accounts.forEach(account -> {
+            transactions.addAll(transactionsRepository.findByAccountId(account.getId()));
+        });
+        return transactions;
     }
 }
