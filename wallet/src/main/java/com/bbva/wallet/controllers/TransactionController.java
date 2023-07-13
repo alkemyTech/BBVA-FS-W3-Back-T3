@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ import java.util.List;
 public class TransactionController {
     private final TransactionService transactionService;
     private final AccountService accountService;
+
 
     @PostMapping("/sendArs")
     public ResponseEntity <Transaction> sendArs(@RequestBody @Valid TransactionDto transactionDto, Authentication authentication) {
@@ -47,10 +49,9 @@ public class TransactionController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
-    @GetMapping
-    public ResponseEntity<Iterable<Transaction>> getUserAccounts( Authentication authentication) {//TODO: Login con id variable
-        User userLoggedIn = (User) authentication.getPrincipal();
-        List<Account> accounts = accountService.findByUserId(userLoggedIn.getId());
+    @GetMapping("/{id}")
+    public ResponseEntity<Iterable<Transaction>> getUserAccounts( @PathVariable Long id) {
+        List<Account> accounts = accountService.findByUserId(id);
         Iterable<Transaction> transactions = transactionService.getUserTransaction(accounts);
         return ResponseEntity.ok(transactions);
     }
