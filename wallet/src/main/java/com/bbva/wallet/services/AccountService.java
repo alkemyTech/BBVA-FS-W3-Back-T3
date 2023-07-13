@@ -13,5 +13,4 @@ public interface AccountService {
     void softDeleteByUserId(Long id);
     List<Account> getUserAccounts(Long userId);
     Account createAccount(Currency currency, User userLoggedIn);
-    void softDeleteByUserId(Long id);
   }

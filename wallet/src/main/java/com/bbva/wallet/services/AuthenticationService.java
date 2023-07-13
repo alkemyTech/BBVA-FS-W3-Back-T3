@@ -13,11 +13,6 @@ import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.repositories.RoleRepository;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,18 +26,8 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
-    private final Utils utils;
 
-    @Value("${transaction.limit.ars}")
-    private double transactionLimitArs;
-
-    @Value("${transaction.limit.usd}")
-    private double transactionLimitUsd;
-
-    @Value("${initial.balance}")
-    private double initialBalance;
-
-    public User signUp(UserSignUpDTO userSignUpDto) {
+    public JwtAuthResponse signUp(UserSignUpDTO userSignUpDto) {
         //Role role = new Role(RoleName.USER);
 
         var role = roleRepository.findByName

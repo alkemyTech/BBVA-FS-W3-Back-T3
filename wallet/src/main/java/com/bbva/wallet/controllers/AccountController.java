@@ -4,9 +4,12 @@ import com.bbva.wallet.dtos.AccountDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
+import com.bbva.wallet.exeptions.AccountException;
+import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.services.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,7 @@ public class AccountController {
         return ResponseEntity.ok(entities);
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<Account> createAccount(@Valid @RequestBody AccountDTO accountDTO, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
@@ -34,7 +38,7 @@ public class AccountController {
 
         if (userAccounts.stream().anyMatch(
                 account -> account.getCurrency().equals(dtoCurrency)) ) {
-            return ResponseEntity.badRequest().build(); //Todo: lanzar excepcion no tiene cuenta en esa moneda
+            throw new AccountException("El usuario ya tiene una cuenta en esa moneda", ErrorCodes.ACCOUNT_ALREADY_EXISTS);
         }
         return ResponseEntity.ok(accountService.createAccount(dtoCurrency, userLoggedIn));
     }
