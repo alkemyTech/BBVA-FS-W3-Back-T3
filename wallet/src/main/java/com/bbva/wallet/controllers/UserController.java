@@ -1,14 +1,14 @@
 package com.bbva.wallet.controllers;
 
-import com.bbva.wallet.services.AccountService;
+import com.bbva.wallet.entities.User;
 import com.bbva.wallet.services.UserService;
+import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -16,6 +16,17 @@ public class UserController {
     private final UserService userService;
     private final AccountService accountService;
 
+
+
+   @PreAuthorize("hasAuthority('ADMIN')")
+   @GetMapping
+    public ResponseEntity<List<User>> getUsers() {
+        List<User> users = userService.getAll();
+        return ResponseEntity.ok(users);
+    }
+
+
+    
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id ) {

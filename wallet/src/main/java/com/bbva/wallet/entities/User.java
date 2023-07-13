@@ -45,6 +45,9 @@ public class User implements Serializable, UserDetails {
     @NotNull
     private String password;
 
+
+
+
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     @JoinColumn(name = "role_id")
@@ -70,7 +73,7 @@ public class User implements Serializable, UserDetails {
 
     @JsonIgnore
     @Override
-    public String getPassword() { return password; }
+    public @NotNull String getPassword() { return password; }
 
     @JsonIgnore
     @Override

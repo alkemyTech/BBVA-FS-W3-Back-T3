@@ -1,20 +1,8 @@
 package com.bbva.wallet.exeptions;
 
+public class TransactionException extends BaseException{
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@AllArgsConstructor
-public class TransactionException extends Throwable{
-    private String message;
-    private  ErrorCodes errorCodes;
-
-
-
-
-
-
+    public TransactionException(String message, ErrorCodes errorCodes) {
+        super(message, errorCodes);
+    }
 }
