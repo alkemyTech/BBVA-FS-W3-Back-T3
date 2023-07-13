@@ -4,6 +4,8 @@ import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.repositories.AccountRepository;
 import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,6 +16,12 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getUserAccounts(Long userId) {
         return accountRepository.findByUserId(userId);
     }
+
+    @Override
+    public Page<Account> getAllAccounts(Pageable pageable) {
+        return accountRepository.findAll(pageable);
+    }
+
 
     @Override
     public void softDeleteByUserId(Long id) {
