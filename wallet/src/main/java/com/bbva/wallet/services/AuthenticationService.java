@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +32,21 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final Utils utils;
 
+    @Value("${transaction.limit.ars}")
+    private double transactionLimitArs;
 
-    public User signUp(UserSignUpDTO userSignUpDto) {
+    @Value("${transaction.limit.usd}")
+    private double transactionLimitUsd;
+
+    @Value("${initial.balance}")
+    private double initialBalance;
+
+    public JwtAuthResponse signUp(UserSignUpDTO userSignUpDto) {
         //Role role = new Role(RoleName.USER);
 
         var role = roleRepository.findByName
-                (userSignUpDto.getRoleName() != null ? userSignUpDto.getRoleName() : RoleName.USER)
-                        .orElse(Role.builder()
+                        (userSignUpDto.getRole() != null ? userSignUpDto.getRole() : RoleName.USER)
+                .orElse(Role.builder()
                         .name(RoleName.USER)
                         .description("Usuario")
                         .build());
@@ -55,15 +64,15 @@ public class AuthenticationService {
         userRepository.save(user);
         Account accountPesos = Account.builder()
                 .currency(Currency.ARS)
-                .transactionLimit(300_000.0)
-                .balance(0.0)
+                .transactionLimit(transactionLimitArs)
+                .balance(initialBalance)
                 .user(user)
                 .cbu(utils.generateRandomCbu())
                 .build();
         Account accountDolares = Account.builder()
                 .currency(Currency.USD)
-                .transactionLimit(1_000.0)
-                .balance(0.0)
+                .transactionLimit(transactionLimitUsd)
+                .balance(initialBalance)
                 .user(user)
                 .cbu(utils.generateRandomCbu())
                 .build();
@@ -71,8 +80,8 @@ public class AuthenticationService {
         accountRepository.save(accountPesos);
         accountRepository.save(accountDolares);
 
-        return user;
-
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthResponse.builder().token(jwt).user(user).build();
 
     }
 
@@ -82,7 +91,10 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(userLogInDTO.getEmail(), userLogInDTO.getPassword()));
         var user = userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
+
         var jwt = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwt).user(user).build();
+
     }
+
 }
