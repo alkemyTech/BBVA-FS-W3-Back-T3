@@ -2,13 +2,15 @@ package com.bbva.wallet.controllers;
 
 
 import com.bbva.wallet.entities.Account;
-import com.bbva.wallet.repositories.AccountRepository;
 import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +29,16 @@ public class AccountController {
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<Account>> getAllAccounts(
+    public ResponseEntity<PagedModel<EntityModel<Account>>> getAllAccounts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            PagedResourcesAssembler<Account> pagedAssembler) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         Page<Account> accountPage = accountService.getAllAccounts(pageable);
 
-        return ResponseEntity.ok(accountPage);
+        PagedModel<EntityModel<Account>> pageModel = pagedAssembler.toModel(accountPage);
+        return ResponseEntity.ok(pageModel);
     }
 }
 
