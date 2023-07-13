@@ -5,6 +5,7 @@ import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
+import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.exeptions.AccountException;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
@@ -14,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,15 +50,17 @@ public class TransactionController {
 
     @SneakyThrows
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') || #id == authentication.principal.id")
     public ResponseEntity<Transaction> transactionsDetails(@PathVariable("id") Long id, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Transaction transaction = transactionService.findById(id).orElseThrow(() -> new TransactionException("La transacción no existe", ErrorCodes.TRANSACTION_DOESNT_EXIST));
         Account sourceAccount = accountService.findById(transaction.getAccount().getId()).orElseThrow(() -> new AccountException("No existe la cuenta", ErrorCodes.ACCOUNT_DOESNT_EXIST));
 
-        if (!sourceAccount.getUser().getId().equals(userLoggedIn.getId()) ) {
-            throw new TransactionException("No corresponde a una transacción propia", ErrorCodes.TRANSACTION_DOESNT_EXIST);
+        if(sourceAccount.getUser().getId().equals(userLoggedIn.getId()) || userLoggedIn.getRole().getName().equals(RoleName.ADMIN)){
+            return ResponseEntity.ok(transaction);
+        } else {
+            throw new TransactionException("No tiene permisos para acceder a esta transacción", ErrorCodes.TRANSACTION_DOESNT_EXIST);
         }
-        return ResponseEntity.ok(transaction);
-    }
+
+
+}
 }
