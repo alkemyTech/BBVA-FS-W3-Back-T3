@@ -5,6 +5,7 @@ import com.bbva.wallet.dtos.LoanResponseDTO;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.LoanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class LoanController {
 
     @SneakyThrows
     @PostMapping("/simulate")
-    public ResponseEntity<LoanResponseDTO> simulateLoan(@RequestBody LoanRequestDTO loanRequestDTO) {
+    public ResponseEntity<LoanResponseDTO> simulateLoan(@RequestBody @Valid LoanRequestDTO loanRequestDTO) {
    if(loanRequestDTO.getTerm() <= 0){
             throw new TransactionException("La cantidad de meses no debe ser 0 ni debe estar vacio", ErrorCodes.INVALID_AMOUNT);
         }
