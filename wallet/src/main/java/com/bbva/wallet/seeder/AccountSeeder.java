@@ -32,10 +32,10 @@ public class AccountSeeder {
         }
         users.forEach(user -> {
             Account accountArs, accountUsd;
-            if(user.getId() % 2 == 0) {
+            if(user.getId() % 2 == 0 || user.getFirstName().equals("admin")) {
                 accountArs = accountService.createAccount(Currency.ARS, user, utils.generateRandomInitialBalance());
             }
-            if (user.getId() % 2 != 0 || user.getFirstName().equals("Nicolás")) {
+            if (user.getId() % 2 != 0 || user.getFirstName().equals("Nicolás") || user.getFirstName().equals("admin")) {
                 accountUsd = accountService.createAccount(Currency.USD, user, utils.generateRandomInitialBalance());
             }
         });
