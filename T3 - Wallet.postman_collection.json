@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9dc6b785-4829-4df1-b3dd-9bad10c2372e",
+		"_postman_id": "526e8f9b-657c-4e66-bdef-6daa7f33be6a",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -155,6 +155,26 @@
 							"port": "8080",
 							"path": [
 								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserInfo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"21"
 							]
 						}
 					},
