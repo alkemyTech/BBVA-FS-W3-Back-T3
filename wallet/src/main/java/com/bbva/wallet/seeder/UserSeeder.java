@@ -45,10 +45,11 @@ public class UserSeeder {
         User user18 = createUser("Nicolás","Tagliafico","nicolástagliafico@email.com","admin",adminRole);
         User user19 = createUser("Gonzalo","Montiel","gonzalomontiel@email.com","admin",adminRole);
         User user20 = createUser("Nicolás","Otamendi","nicolásotamendi@email.com","admin",adminRole);
+        User user21 = createUser("admin","","admin@admin.com","admin",adminRole);
 
         return userRepository.saveAll(java.util.List.of(user1, user2, user3, user4, user5, user6, user7, user8,
                 user9, user10,
-                user11, user12, user13, user14, user15, user16, user17, user18, user19, user20));
+                user11, user12, user13, user14, user15, user16, user17, user18, user19, user20, user21));
     }
 
     private User createUser(String firstName, String lastName, String email, String password, Role role) {
