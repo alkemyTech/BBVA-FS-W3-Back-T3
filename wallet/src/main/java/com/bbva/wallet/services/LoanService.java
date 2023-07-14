@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 
 public interface LoanService {
 
-    LoanResponseDTO simulate(double amount, Integer month);
+    LoanResponseDTO simulate(Double amount, Integer month);
 }

@@ -12,7 +12,7 @@ public class LoanServiceImpl implements LoanService {
     @Value("${loan.interest-rate}")
     private Double interestRate;
     @Override
-    public LoanResponseDTO simulate(double amount, Integer term) {
+    public LoanResponseDTO simulate(Double amount, Integer term) {
         Double interest = amount * interestRate * term;
         Double totalPayment = amount + interest;
         Double monthlyPayment = totalPayment / term;
