@@ -5,39 +5,32 @@ import com.bbva.wallet.dtos.UserLogInDTO;
 import com.bbva.wallet.dtos.UserSignUpDTO;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.repositories.UserRepository;
-import com.bbva.wallet.entities.Account;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.bbva.wallet.entities.Role;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.enums.RoleName;
-import com.bbva.wallet.repositories.AccountRepository;
 import com.bbva.wallet.repositories.RoleRepository;
-import com.bbva.wallet.utils.Utils;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
-    private final Utils utils;
 
-
-    public User signUp(UserSignUpDTO userSignUpDto) {
+    public JwtAuthResponse signUp(UserSignUpDTO userSignUpDto) {
         //Role role = new Role(RoleName.USER);
 
         var role = roleRepository.findByName
-                (userSignUpDto.getRoleName() != null ? userSignUpDto.getRoleName() : RoleName.USER)
-                        .orElse(Role.builder()
+                        (userSignUpDto.getRole() != null ? userSignUpDto.getRole() : RoleName.USER)
+                .orElse(Role.builder()
                         .name(RoleName.USER)
                         .description("Usuario")
                         .build());
@@ -53,26 +46,11 @@ public class AuthenticationService {
                 .build();
 
         userRepository.save(user);
-        Account accountPesos = Account.builder()
-                .currency(Currency.ARS)
-                .transactionLimit(300_000.0)
-                .balance(0.0)
-                .user(user)
-                .cbu(utils.generateRandomCbu())
-                .build();
-        Account accountDolares = Account.builder()
-                .currency(Currency.USD)
-                .transactionLimit(1_000.0)
-                .balance(0.0)
-                .user(user)
-                .cbu(utils.generateRandomCbu())
-                .build();
+        accountService.createAccount(Currency.ARS, user);
+        accountService.createAccount(Currency.USD, user);
 
-        accountRepository.save(accountPesos);
-        accountRepository.save(accountDolares);
-
-        return user;
-
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthResponse.builder().token(jwt).user(user).build();
 
     }
 
@@ -84,5 +62,6 @@ public class AuthenticationService {
 
         var jwt = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwt).user(user).build();
+
     }
 }
