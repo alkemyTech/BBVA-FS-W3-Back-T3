@@ -27,7 +27,6 @@ public class AccountSeeder {
         if (accountService.count() != 0) {
             return;
         }
-        // If there are users but no accounts, create accounts for all users
         if (users.isEmpty()) {
             users = userService.getAll();
         }
