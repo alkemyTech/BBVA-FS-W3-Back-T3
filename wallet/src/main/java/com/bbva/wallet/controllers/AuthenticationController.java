@@ -18,14 +18,12 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<JwtAuthResponse> singUp (@Valid @RequestBody UserSignUpDTO userDto){
-        JwtAuthResponse response = authenticationService.signUp(userDto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authenticationService.signUp(userDto));
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> LogIn (@Valid @RequestBody UserLogInDTO userDto){
-        JwtAuthResponse response = authenticationService.logIn(userDto);
-        return ResponseEntity.ok(response);
-
+        return ResponseEntity.ok(authenticationService.logIn(userDto));
     }
 }
+
