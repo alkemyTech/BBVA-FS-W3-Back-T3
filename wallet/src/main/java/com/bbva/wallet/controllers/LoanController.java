@@ -23,7 +23,7 @@ public class LoanController {
     @PostMapping("/simulate")
     public ResponseEntity<LoanResponseDTO> simulateLoan(@RequestBody LoanRequestDTO loanRequestDTO) {
    if(loanRequestDTO.getTerm() <= 0){
-            throw new TransactionException("El monto no debe ser 0 ni debe estar vacio", ErrorCodes.INVALID_AMOUNT);
+            throw new TransactionException("La cantidad de meses no debe ser 0 ni debe estar vacio", ErrorCodes.INVALID_AMOUNT);
         }
         double amount = loanRequestDTO.getAmount();
         int term = loanRequestDTO.getTerm();
