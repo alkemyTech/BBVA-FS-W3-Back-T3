@@ -1,10 +1,8 @@
 package com.bbva.wallet.dtos;
 
-
-import com.bbva.wallet.enums.RoleName;
+import com.bbva.wallet.enums.Currency;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,23 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSignUpDTO {
+public class AccountDTO {
 
     @NotNull
-    private String firstName;
-
-    @NotNull
-    private String lastName;
-
-    @NotNull
-    @Email
-    private String email;
-
-    @NotNull
-    private String password;
-
     @Enumerated(EnumType.STRING)
-    private RoleName role;
-
+    private Currency currency;
 
 }
