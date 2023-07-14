@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
+import org.hibernate.annotations.Where;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@Where(clause = "soft_delete = false")
 @Table(name = "accounts")
 public class Account implements Serializable {
     @Id
@@ -51,5 +52,6 @@ public class Account implements Serializable {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
     private User user;
 }
