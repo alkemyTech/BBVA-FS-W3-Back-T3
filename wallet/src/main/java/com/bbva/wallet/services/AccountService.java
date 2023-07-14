@@ -19,4 +19,5 @@ public interface AccountService {
     Optional<Account> getAccountByUserIdAndCurrency(Long id, Currency currency);
     Optional<BalanceDTO> getBalance(Long userId);
     long count();
-  }
+    List<Account> findAll();
+}

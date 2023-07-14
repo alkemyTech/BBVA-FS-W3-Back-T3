@@ -19,13 +19,13 @@ public class AccountSeeder {
     private final UserService userService;
     private final UserSeeder userSeeder;
     private final Utils utils;
-    @PostConstruct
-    public void seedAccounts() {
+    public List<Account> seedAccounts() {
 
        List<User> users =  userSeeder.seedUsers();
+        List<Account> accounts = List.of();
 
         if (accountService.count() != 0) {
-            return;
+            return accountService.findAll();
         }
         if (users.isEmpty()) {
             users = userService.getAll();
@@ -34,10 +34,13 @@ public class AccountSeeder {
             Account accountArs, accountUsd;
             if(user.getId() % 2 == 0 || user.getFirstName().equals("admin")) {
                 accountArs = accountService.createAccount(Currency.ARS, user, utils.generateRandomInitialBalance());
+                accounts.add(accountArs);
             }
             if (user.getId() % 2 != 0 || user.getFirstName().equals("Nicolás") || user.getFirstName().equals("admin")) {
                 accountUsd = accountService.createAccount(Currency.USD, user, utils.generateRandomInitialBalance());
+                accounts.add(accountUsd);
             }
         });
+        return accounts;
     }
 }
