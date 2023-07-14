@@ -1,10 +1,11 @@
 {
 	"info": {
-		"_postman_id": "c2426251-3d38-4729-9867-5a233001726d",
+		"_postman_id": "ea175397-af91-420d-a7dd-252559fc01fd",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20774953"
+		"_exporter_id": "20774953",
+		"_collection_link": "https://www.postman.com/bold-equinox-852207/workspace/damian-pereyra-workspace/collection/20774953-ea175397-af91-420d-a7dd-252559fc01fd?action=share&creator=20774953&source=collection_link"
 	},
 	"item": [
 		{
@@ -95,6 +96,29 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -155,6 +179,55 @@
 							"port": "8080",
 							"path": [
 								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserInfo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"21"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\":\"Neyen\",\r\n    \"lastName\":\"Ergis\",\r\n    \"password\":\"gatin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"8"
 							]
 						}
 					},
@@ -290,6 +363,35 @@
 							"path": [
 								"accounts",
 								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditTransactionLimit",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionLimit\":\"10000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/accounts/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"accounts",
+								"14"
 							]
 						}
 					},
@@ -572,6 +674,27 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GetTransactionsByUserId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/transactions/userId/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"transactions",
+								"userId",
+								"8"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -677,7 +800,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"amount\": 100000,\r\n  \"term\": 12\r\n}",
+							"raw": "{\r\n    \"amount\": 10000,\r\n    \"term\": 12\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
