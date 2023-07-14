@@ -1,13 +1,18 @@
 package com.bbva.wallet.utils;
 
 import com.bbva.wallet.entities.Account;
+import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Configuration
 public class Utils {
@@ -38,4 +43,17 @@ public class Utils {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(""));
     }
+
+    public Page<Transaction> paginateTransactions(Iterable<Transaction> transactions, int page, int size) {
+        List<Transaction> transactionList = StreamSupport.stream(transactions.spliterator(), false)
+                .collect(Collectors.toList());
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, transactionList.size());
+
+        List<Transaction> pageTransactions = transactionList.subList(startIndex, endIndex);
+
+        return new PageImpl<>(pageTransactions, PageRequest.of(page, size), transactionList.size());
+    }
+
 }
