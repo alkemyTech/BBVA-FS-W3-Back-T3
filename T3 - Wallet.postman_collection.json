@@ -294,6 +294,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "EditTransactionLimit",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionLimit\":\"10000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/accounts/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"accounts",
+								"14"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {

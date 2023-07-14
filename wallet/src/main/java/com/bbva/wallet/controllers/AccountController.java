@@ -2,11 +2,13 @@ package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.AccountDTO;
 import com.bbva.wallet.dtos.BalanceDTO;
+import com.bbva.wallet.dtos.AccountTransactionLimitDto;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.exeptions.AccountException;
 import com.bbva.wallet.exeptions.ErrorCodes;
+import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +51,21 @@ public class AccountController {
             throw new AccountException("El usuario ya tiene una cuenta en esa moneda", ErrorCodes.ACCOUNT_ALREADY_EXISTS);
         }
         return ResponseEntity.ok(accountService.createAccount(dtoCurrency, userLoggedIn));
+    }
+
+    @SneakyThrows
+    @PatchMapping("/{id}")
+    public ResponseEntity<Account> updateAccount(@PathVariable("id") Long id, @RequestBody AccountTransactionLimitDto accountTransactionLimitDto, Authentication authentication) {
+        User userLoggedIn = (User) authentication.getPrincipal();
+        Account account= accountService.findById(id).orElseThrow(() -> new TransactionException("No existe la cuenta indicada ", ErrorCodes.ACCOUNT_DOESNT_EXIST));
+
+        if (account.getUser().getId()!=userLoggedIn.getId()){
+            throw new AccountException("No se puede modificar una cuenta ajena ", ErrorCodes.ACCOUNT_DOESNT_EXIST);
+        }
+
+        account.setTransactionLimit(accountTransactionLimitDto.getTransactionLimit());
+        accountService.save(account);
+        return ResponseEntity.ok(account);
+
     }
 }
