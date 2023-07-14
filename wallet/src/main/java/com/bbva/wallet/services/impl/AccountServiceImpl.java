@@ -73,6 +73,12 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.save(account);
         });
     }
+
+    @Override
+    public void save(Account sourceAccount){
+        accountRepository.save(sourceAccount);
+    }
+  
     @Override
     public Optional<BalanceDTO> getBalance(Long userId) {
         List<Account> accountList = accountRepository.findByUserId(userId);
@@ -99,5 +105,4 @@ public class AccountServiceImpl implements AccountService {
         } else {
             return Optional.empty();
         }
-    }
 }
