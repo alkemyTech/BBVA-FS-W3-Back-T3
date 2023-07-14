@@ -44,12 +44,18 @@ Estos son los roles que existen en el sistema:
   * Las contraseñas de todos los usuarios con rol USER es `123`.
   * Las contraseñas de todos los usuarios con rol ADMIN es `admin`.
   * Para cargar los datos de **usuarios** de prueba (por unica vez), la base de datos debe estar vacía.
-* **Accounts:**
+* _**Accounts:**_
   * Para cargar las cuentas asociadas, los usuarios de prueba:
     * si no existen: se cargan antes `automaticamente`
     * si existen: se traen de la DB
-  * Cada account tiene un `Balance inicial entre 0 y 500mil _random_`
+  * Cada account tiene un `Balance inicial entre 0 y 500mil random`
   * Todos los users tienen `al menos 1 account asociada`, ya sea en ARS o USD
   * El usuario `admin`,` Nicolas Tagliafico` y `Otamendi` tienen `2 accounts asociadas`, una en ARS y otra en USD
   * En la tabla de usuarios, la columna `Account` indica la moneda de la cuenta asociada
+* **Transactions**:
+  * Para cargar las transacciones asociadas, las account de prueba:
+    * si no existen: se cargan antes `automaticamente`
+    * si existen: se traen de la DB
+  * Respetan el balance de la cuenta y no se pasan del limite de transferencia
+  * El balance de la cuenta se ve afectado por las transacciones
   
