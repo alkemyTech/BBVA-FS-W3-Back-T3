@@ -17,4 +17,5 @@ public class TransactionDTO {
     @NotNull
     private Double amount;
     private LocalDateTime transactionDate;
+    private String description;
 }
