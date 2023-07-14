@@ -2,9 +2,7 @@ package com.bbva.wallet.seeder;
 
 import com.bbva.wallet.entities.Role;
 import com.bbva.wallet.entities.User;
-import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.repositories.UserRepository;
-import com.bbva.wallet.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,14 +13,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserSeeder {
     private final UserRepository userRepository;
-    private final RoleService roleService;
+    private final RoleSeeder roleSeeder;
     private final PasswordEncoder passwordEncoder;
     public List<User> seedUsers() {
         if (userRepository.count() != 0) {
             return List.of();
         }
-        Role adminRole = roleService.getRoleByName(RoleName.ADMIN);
-        Role userRole = roleService.getRoleByName(RoleName.USER);
+        List<Role> roles = roleSeeder.seedRoles();
+        Role adminRole = roles.get(0);
+        Role userRole = roles.get(1);
 
         User user1 = createUser("Diego","Aprosoff","diegoaprosoff@email.com","123",userRole);
         User user2 = createUser("Diego","Martin Perez","diegomartin.perez@email.com","123",userRole);
