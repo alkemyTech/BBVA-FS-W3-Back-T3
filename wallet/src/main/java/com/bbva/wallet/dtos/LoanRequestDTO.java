@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class LoanRequestDTO {
     @NotNull
-    private double mount;
+    private Double amount;
 
     @NotNull
-    private double months;
-
+    private Integer term;
 }

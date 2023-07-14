@@ -5,15 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoanResponseDTO {
     @NotNull
-    private double monthlyFee;
+    private Double monthlyPayment;
 
     @NotNull
-    private double totalPayment;
+    private Double totalPayment;
 
     @NotNull
-    private double interesRate;
-
+    private Double interestRate;
 }
