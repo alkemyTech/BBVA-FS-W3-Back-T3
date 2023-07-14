@@ -1,6 +1,7 @@
 package com.bbva.wallet.services.impl;
 
-import com.bbva.wallet.dtos.TransactionDto;
+import com.bbva.wallet.dtos.DepositCreatedDTO;
+import com.bbva.wallet.dtos.TransactionDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.TypeTransaction;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class TransactionServiceImpl implements TransactionService {
     private TransactionsRepository transactionsRepository;
 
-    public Transaction send(TransactionDto transactionDto, Account sourceAccount, Account destinationAccount ) throws TransactionException {
+    public Transaction send(TransactionDTO transactionDto, Account sourceAccount, Account destinationAccount ) throws TransactionException {
         if (sourceAccount.getUser().equals(destinationAccount.getUser())){
             throw new TransactionException("No se puede transferir a uno mismo", ErrorCodes.SAME_ACCOUNT_TRANSFER);
         }
@@ -52,5 +53,31 @@ public class TransactionServiceImpl implements TransactionService {
         destinationAccount.setBalance(newBalanceIncome);
         sourceAccount.setBalance(newBalancePayment);
         return payment;
+    }
+
+    // ------------------------------------------Deposit--------------------------------------------------------------
+    public DepositCreatedDTO deposit(Account account, double amount) throws TransactionException{
+        if (amount <= 0) {
+            throw new TransactionException("El monto ingresado debe ser mayor a 0", ErrorCodes.INSUFFICIENT_FOUNDS);
+        }
+        // Crear una nueva transacción
+        Transaction transactions = Transaction.builder()
+                .account(account)
+                .type(TypeTransaction.DEPOSIT)
+                .amount(amount)
+                .build();
+
+        // Actualizar el balance de la cuenta
+        account.setBalance(account.getBalance() + amount);
+
+        // Guardar la transacción y actualizar la cuenta en la base de datos
+        transactionsRepository.save(transactions);
+
+        return DepositCreatedDTO.builder()
+                .accountId(account.getId())
+                .balance(account.getBalance())
+                .currency(account.getCurrency())
+                .amount(amount)
+                .build();
     }
 }
