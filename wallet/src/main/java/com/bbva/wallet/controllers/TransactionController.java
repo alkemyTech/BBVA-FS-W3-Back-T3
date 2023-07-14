@@ -2,7 +2,7 @@ package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.*;
 import com.bbva.wallet.dtos.TransactionDescriptionDto;
-import com.bbva.wallet.dtos.TransactionDto;
+import com.bbva.wallet.dtos.TransactionDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.entities.User;
