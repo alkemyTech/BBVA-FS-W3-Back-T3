@@ -13,7 +13,8 @@ public interface AccountService {
     void saveAll(List<Account> accounts);
     void softDeleteByUserId(Long id);
     List<Account> getUserAccounts(Long userId);
-    Account createAccount(Currency currency, User userLoggedIn);
-  void save(Account sourceAccount);
+    Account createAccount(Currency currency, User userLoggedIn, Double... initialBalance);
+    void save(Account sourceAccount);
     Optional<BalanceDTO> getBalance(Long userId);
-}
+    long count();
+  }

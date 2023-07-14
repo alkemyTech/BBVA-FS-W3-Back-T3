@@ -38,4 +38,10 @@ public class Utils {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(""));
     }
+
+    public Double generateRandomInitialBalance() {
+        Random random = new Random();
+        double randomValue = random.nextDouble() * 500000;
+        return Math.round(randomValue * 100.0) / 100.0;
+    }
 }
