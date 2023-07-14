@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface AccountService {
     Optional<Account> findById(Long Id);
     Optional<Account> findByUserIdAndCurrency(Long id, Currency currency);
+
+    List<Account> findByUserId(Long userId);
+
     void saveAll(List<Account> accounts);
     void softDeleteByUserId(Long id);
     List<Account> getUserAccounts(Long userId);

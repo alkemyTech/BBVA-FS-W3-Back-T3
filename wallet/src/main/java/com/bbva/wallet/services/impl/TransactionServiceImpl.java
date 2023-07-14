@@ -8,16 +8,18 @@ import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.TypeTransaction;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
-import com.bbva.wallet.repositories.TransactionsRepository;
+import com.bbva.wallet.repositories.TransactionRepository;
 import com.bbva.wallet.services.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
-    private TransactionsRepository transactionsRepository;
+    private final TransactionRepository transactionRepository;
 
     public Transaction send(TransactionDTO transactionDto, Account sourceAccount, Account destinationAccount) throws TransactionException {
         if (sourceAccount.getUser().equals(destinationAccount.getUser())) {
@@ -33,7 +35,6 @@ public class TransactionServiceImpl implements TransactionService {
             throw new TransactionException("No se puede transferir a una cuenta de distinta moneda", ErrorCodes.DIFFERENT_CURRENCY);
         }
 
-
         var income = Transaction.builder()
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.INCOME)
@@ -47,8 +48,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .description(transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
 
-        transactionsRepository.save(income);
-        transactionsRepository.save(payment);
+        transactionRepository.save(income);
+        transactionRepository.save(payment);
 
         Double newBalanceIncome = destinationAccount.getBalance() + transactionDto.getAmount();
         Double newBalancePayment = sourceAccount.getBalance() - transactionDto.getAmount();
@@ -73,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
         account.setBalance(account.getBalance() + amount);
 
         // Guardar la transacción y actualizar la cuenta en la base de datos
-        transactionsRepository.save(transactions);
+        transactionRepository.save(transactions);
 
         return DepositCreatedDTO.builder()
                 .accountId(account.getId())
@@ -101,7 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
         // Actualizar el balance de la cuenta
         sourceAccount.setBalance(sourceAccount.getBalance() - amount);
         // Guardar la transacción y actualizar la cuenta en la base de datos
-        transactionsRepository.save(transactions);
+        transactionRepository.save(transactions);
 
         return PaymentCreatedDTO.builder()
                 .accountId(sourceAccount.getId())
@@ -112,10 +113,19 @@ public class TransactionServiceImpl implements TransactionService {
     }
     @Override
     public Optional<Transaction> findById(Long Id) {
-        return transactionsRepository.findById(Id);
+        return transactionRepository.findById(Id);
     }
 
     public Transaction save( Transaction transaction ){
-        return transactionsRepository.save(transaction);
+        return transactionRepository.save(transaction);
+    }
+
+    @Override
+    public List<Transaction> getUserTransaction(List<Account> accounts) {
+        List<Transaction> transactions = new ArrayList<>();
+        accounts.forEach(account ->
+            transactions.addAll(transactionRepository.findByAccountId(account.getId())
+            ));
+        return transactions;
     }
 }

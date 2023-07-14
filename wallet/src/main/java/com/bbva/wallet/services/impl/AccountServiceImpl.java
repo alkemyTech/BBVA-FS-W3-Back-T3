@@ -8,7 +8,7 @@ import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.repositories.AccountRepository;
 import com.bbva.wallet.repositories.FixedTermDepositsRepository;
-import com.bbva.wallet.repositories.TransactionsRepository;
+import com.bbva.wallet.repositories.TransactionRepository;
 import com.bbva.wallet.services.AccountService;
 import com.bbva.wallet.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final Utils utils;
-    private final TransactionsRepository transactionsRepository;
+    private final TransactionRepository transactionRepository;
     private final FixedTermDepositsRepository fixedTermDepositsRepository;
 
 
@@ -43,6 +43,12 @@ public class AccountServiceImpl implements AccountService {
     public Optional<Account> findByUserIdAndCurrency(Long id, Currency currency) {
         return accountRepository.findByUserIdAndCurrency(id, currency);
     }
+
+    @Override
+    public List<Account> findByUserId(Long userId){
+        return accountRepository.findByUserId(userId);
+    }
+
     @Override
     public void saveAll(List<Account> accounts) {
         accountRepository.saveAll(accounts);
@@ -98,8 +104,8 @@ public class AccountServiceImpl implements AccountService {
             Account arsAccount = optionalArsAccount.get();
 
             List<Transaction> transactions = new ArrayList<>();
-            transactions.addAll(transactionsRepository.findAllByAccount(usdAccount));
-            transactions.addAll(transactionsRepository.findAllByAccount(arsAccount));
+            transactions.addAll(transactionRepository.findAllByAccount(usdAccount));
+            transactions.addAll(transactionRepository.findAllByAccount(arsAccount));
 
             List<FixedTermDeposits> fixedTermDeposits = fixedTermDepositsRepository.findAllByAccount(arsAccount);
 

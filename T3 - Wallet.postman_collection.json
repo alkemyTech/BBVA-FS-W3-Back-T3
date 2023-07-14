@@ -1,11 +1,10 @@
 {
 	"info": {
-		"_postman_id": "4f046ce6-12d8-4b7f-906d-a8d2e46c37b4",
+		"_postman_id": "9dc6b785-4829-4df1-b3dd-9bad10c2372e",
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20774953",
-		"_collection_link": "https://www.postman.com/bold-equinox-852207/workspace/damian-pereyra-workspace/collection/20774953-4f046ce6-12d8-4b7f-906d-a8d2e46c37b4?action=share&creator=20774953&source=collection_link"
+		"_exporter_id": "16198497"
 	},
 	"item": [
 		{
@@ -569,6 +568,27 @@
 							"path": [
 								"transactions",
 								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTransactionsByUserId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/transactions/userId/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"transactions",
+								"userId",
+								"8"
 							]
 						}
 					},

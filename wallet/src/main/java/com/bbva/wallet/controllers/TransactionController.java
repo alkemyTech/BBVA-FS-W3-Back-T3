@@ -1,8 +1,6 @@
 package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.*;
-import com.bbva.wallet.dtos.TransactionDescriptionDto;
-import com.bbva.wallet.dtos.TransactionDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.entities.User;
@@ -17,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -108,6 +107,15 @@ public class TransactionController {
 
        return ResponseEntity.ok(transaction);
 
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
+    @GetMapping("/userId/{id}")
+    public ResponseEntity<Iterable<Transaction>> getUserAccounts( @PathVariable Long id) {
+        List<Account> accounts = accountService.findByUserId(id);
+        Iterable<Transaction> transactions = transactionService.getUserTransaction(accounts);
+        return ResponseEntity.ok(transactions);
     }
 
 }
