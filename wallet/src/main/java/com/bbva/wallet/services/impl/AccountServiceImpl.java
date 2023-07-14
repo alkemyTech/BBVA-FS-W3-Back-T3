@@ -74,6 +74,10 @@ public class AccountServiceImpl implements AccountService {
         });
     }
 
+    public Optional<Account> getAccountByUserIdAndCurrency(Long userId, Currency currency) {
+        return accountRepository.findByUserIdAndCurrency(userId, currency);
+    }
+
     @Override
     public void save(Account sourceAccount){
         accountRepository.save(sourceAccount);

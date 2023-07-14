@@ -14,6 +14,7 @@ public interface AccountService {
     void softDeleteByUserId(Long id);
     List<Account> getUserAccounts(Long userId);
     Account createAccount(Currency currency, User userLoggedIn);
-  void save(Account sourceAccount);
+    void save(Account sourceAccount);
+    Optional<Account> getAccountByUserIdAndCurrency(Long id, Currency currency);
     Optional<BalanceDTO> getBalance(Long userId);
 }
