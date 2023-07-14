@@ -114,4 +114,8 @@ public class TransactionServiceImpl implements TransactionService {
     public Optional<Transaction> findById(Long Id) {
         return transactionsRepository.findById(Id);
     }
+
+    public Transaction save( Transaction transaction ){
+        return transactionsRepository.save(transaction);
+    }
 }

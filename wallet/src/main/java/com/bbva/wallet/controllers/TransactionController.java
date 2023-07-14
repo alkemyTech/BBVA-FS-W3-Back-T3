@@ -1,6 +1,8 @@
 package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.*;
+import com.bbva.wallet.dtos.TransactionDescriptionDto;
+import com.bbva.wallet.dtos.TransactionDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.entities.User;
@@ -89,4 +91,23 @@ public class TransactionController {
 
 
 }
+
+    @SneakyThrows
+    @PatchMapping("/{id}")
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable("id") Long id, @RequestBody TransactionDescriptionDto transactionDescriptionDto, Authentication authentication) {
+        User userLoggedIn = (User) authentication.getPrincipal();
+        Transaction transaction= transactionService.findById(id).orElseThrow(() -> new TransactionException("No existe la transaccion indicada ", ErrorCodes.TRANSACTION_DOESNT_EXIST));
+        Account sourceAccount = accountService.findById(transaction.getAccount().getId()).orElseThrow(() -> new AccountException("No existe la cuenta ", ErrorCodes.ACCOUNT_DOESNT_EXIST));
+
+        if (sourceAccount.getUser().getId()!=userLoggedIn.getId()){
+           throw new TransactionException("No se puede modificar una transaccion ajena ", ErrorCodes.TRANSACTION_DOESNT_EXIST);
+        }
+
+        transaction.setDescription(transactionDescriptionDto.getDescription());
+        transactionService.save(transaction);
+
+       return ResponseEntity.ok(transaction);
+
+    }
+
 }

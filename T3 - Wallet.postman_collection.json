@@ -544,6 +544,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "EditDescription",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Nueva description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/transactions/16",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"transactions",
+								"16"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {

@@ -14,4 +14,5 @@ public interface TransactionService {
     DepositCreatedDTO deposit(Account account, Double amount) throws TransactionException;
     PaymentCreatedDTO payment(Account sourceAccount, Double amount) throws TransactionException;
     Optional<Transaction> findById(Long id);
+    Transaction save(Transaction transaction);
 }
