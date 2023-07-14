@@ -111,7 +111,7 @@ public class TransactionController {
 
 
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
-    @GetMapping("/{id}")
+    @GetMapping("/userId/{id}")
     public ResponseEntity<Iterable<Transaction>> getUserAccounts( @PathVariable Long id) {
         List<Account> accounts = accountService.findByUserId(id);
         Iterable<Transaction> transactions = transactionService.getUserTransaction(accounts);

@@ -74,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
         account.setBalance(account.getBalance() + amount);
 
         // Guardar la transacción y actualizar la cuenta en la base de datos
-        transactionsRepository.save(transactions);
+        transactionRepository.save(transactions);
 
         return DepositCreatedDTO.builder()
                 .accountId(account.getId())
@@ -102,7 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
         // Actualizar el balance de la cuenta
         sourceAccount.setBalance(sourceAccount.getBalance() - amount);
         // Guardar la transacción y actualizar la cuenta en la base de datos
-        transactionsRepository.save(transactions);
+        transactionRepository.save(transactions);
 
         return PaymentCreatedDTO.builder()
                 .accountId(sourceAccount.getId())
@@ -113,19 +113,19 @@ public class TransactionServiceImpl implements TransactionService {
     }
     @Override
     public Optional<Transaction> findById(Long Id) {
-        return transactionsRepository.findById(Id);
+        return transactionRepository.findById(Id);
     }
 
     public Transaction save( Transaction transaction ){
-        return transactionsRepository.save(transaction);
+        return transactionRepository.save(transaction);
     }
 
     @Override
     public List<Transaction> getUserTransaction(List<Account> accounts) {
-        List<Transaction> transactions = new ArrayList<Transaction>();
-        accounts.forEach(account -> {
-            transactions.addAll(transactionRepository.findByAccountId(account.getId()));
-        });
+        List<Transaction> transactions = new ArrayList<>();
+        accounts.forEach(account ->
+            transactions.addAll(transactionRepository.findByAccountId(account.getId())
+            ));
         return transactions;
     }
 }
