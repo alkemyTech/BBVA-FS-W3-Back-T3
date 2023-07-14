@@ -48,4 +48,10 @@ public class Utils {
     public Double calculateTotal(Double amount, Double interest, LocalDateTime closingDate, LocalDateTime creationDate) {
         return amount + calculateInterest(amount, interest, ChronoUnit.DAYS.between(creationDate, closingDate));
     }
+
+    public Double generateRandomInitialBalance() {
+        Random random = new Random();
+        double randomValue = random.nextDouble() * 500000;
+        return Math.round(randomValue * 100.0) / 100.0;
+    }
 }

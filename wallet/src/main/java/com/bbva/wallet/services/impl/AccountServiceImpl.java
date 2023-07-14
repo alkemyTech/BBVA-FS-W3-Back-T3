@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +36,6 @@ public class AccountServiceImpl implements AccountService {
     @Value("${initial.balance}")
     private Double initialBalance;
 
-
-
     public Optional<Account> findById(Long Id) {
         return accountRepository.findById(Id);
     }
@@ -53,16 +52,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account createAccount(Currency currency, User userLoggedIn) {
+    public Account createAccount(Currency currency, User userLoggedIn, Double... balance) {
         Account newAccount = Account.builder()
                 .currency(currency)
                 .transactionLimit(currency.equals(Currency.ARS) ? transactionLimitArs : transactionLimitUsd)
-                .balance(initialBalance)
+                .balance(Arrays.stream(balance).findFirst().orElse(initialBalance))
                 .user(userLoggedIn)
                 .cbu(utils.generateRandomCbu())
                 .build();
         accountRepository.save(newAccount);
         return newAccount;
+    }
+
+    public long count() {
+        return accountRepository.count();
     }
 
     @Override
@@ -82,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
     public void save(Account sourceAccount){
         accountRepository.save(sourceAccount);
     }
-  
+
     @Override
     public Optional<BalanceDTO> getBalance(Long userId) {
         List<Account> accountList = accountRepository.findByUserId(userId);
