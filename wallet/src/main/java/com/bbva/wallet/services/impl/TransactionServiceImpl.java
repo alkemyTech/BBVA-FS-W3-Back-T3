@@ -12,6 +12,7 @@ import com.bbva.wallet.repositories.TransactionsRepository;
 import com.bbva.wallet.services.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -37,13 +38,13 @@ public class TransactionServiceImpl implements TransactionService {
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.INCOME)
                 .account(destinationAccount)
-                .description( transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
+                .description(transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
         var payment = Transaction.builder()
                 .amount(transactionDto.getAmount())
                 .type(TypeTransaction.PAYMENT)
                 .account(sourceAccount)
-                .description( transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
+                .description(transactionDto.getDescription() != null ? transactionDto.getDescription() : "")
                 .build();
 
         transactionsRepository.save(income);
@@ -108,5 +109,9 @@ public class TransactionServiceImpl implements TransactionService {
                 .currency(sourceAccount.getCurrency())
                 .amount(amount)
                 .build();
+    }
+    @Override
+    public Optional<Transaction> findById(Long Id) {
+        return transactionsRepository.findById(Id);
     }
 }

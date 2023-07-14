@@ -8,8 +8,10 @@ import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.exeptions.TransactionException;
 
+import java.util.Optional;
 public interface TransactionService {
     Transaction send(TransactionDTO transactionDto, Account sourceAccount, Account destinationAccount) throws TransactionException;
     DepositCreatedDTO deposit(Account account, Double amount) throws TransactionException;
     PaymentCreatedDTO payment(Account sourceAccount, Double amount) throws TransactionException;
+    Optional<Transaction> findById(Long id);
 }
