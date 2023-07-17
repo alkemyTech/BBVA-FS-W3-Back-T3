@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Objects;
 
 @RestControllerAdvice
 @RestController
@@ -55,8 +56,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Response<String>> handleValidationException(MethodArgumentNotValidException ex) {
-        String error = String.valueOf(ex.getBody());
-        String field = ex.getParameter().getParameterName();
+        String error = ex.getBody().getDetail();
+        String field = Objects.requireNonNull(ex.getBindingResult().getFieldError()).getField();
         return getResponseResponseEntity(error, field, ErrorCodes.INVALID_VALUE, HttpStatus.BAD_REQUEST);
     }
 
