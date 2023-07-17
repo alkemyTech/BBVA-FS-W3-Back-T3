@@ -51,7 +51,7 @@ public class TransactionController {
     //------------------------------------------Deposit--------------------------------------------------------------
     @SneakyThrows
     @PostMapping("/deposit")
-    public ResponseEntity<DepositCreatedDTO> deposit(@RequestBody DepositDTO depositDTO, Authentication authentication) {
+    public ResponseEntity<DepositCreatedDTO> deposit(@Valid @RequestBody DepositDTO depositDTO, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Account sourceAccount = accountService.findByUserIdAndCurrency(userLoggedIn.getId(), depositDTO.getCurrency())
                 .orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + depositDTO.getCurrency(), ErrorCodes.ACCOUNT_DOESNT_EXIST));
@@ -64,7 +64,7 @@ public class TransactionController {
     //------------------------------------------Payment--------------------------------------------------------------
     @SneakyThrows
     @PostMapping("/payment")
-    public ResponseEntity<PaymentCreatedDTO> payment(@RequestBody PaymentDTO paymentDTO, Authentication authentication) {
+    public ResponseEntity<PaymentCreatedDTO> payment(@Valid @RequestBody PaymentDTO paymentDTO, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Account sourceAccount = accountService.findByUserIdAndCurrency(userLoggedIn.getId(), paymentDTO.getCurrency())
                 .orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + paymentDTO.getCurrency(), ErrorCodes.ACCOUNT_DOESNT_EXIST));
@@ -93,7 +93,9 @@ public class TransactionController {
 
     @SneakyThrows
     @PatchMapping("/{id}")
-    public ResponseEntity<Transaction> updateTransaction(@PathVariable("id") Long id, @RequestBody TransactionDescriptionDto transactionDescriptionDto, Authentication authentication) {
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable("id") Long id,
+                                                         @Valid @RequestBody TransactionDescriptionDto transactionDescriptionDto,
+                                                         Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Transaction transaction= transactionService.findById(id).orElseThrow(() -> new TransactionException("No existe la transaccion indicada ", ErrorCodes.TRANSACTION_DOESNT_EXIST));
         Account sourceAccount = accountService.findById(transaction.getAccount().getId()).orElseThrow(() -> new AccountException("No existe la cuenta ", ErrorCodes.ACCOUNT_DOESNT_EXIST));

@@ -3,6 +3,7 @@ package com.bbva.wallet.exeptions;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,6 +43,17 @@ public class GlobalExceptionHandler {
         response.addError(ErrorCodes.WRONG_METHOD);
         response.setMessage(field);
         response.setData(data);
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ResponseEntity<Response<String>> handleValidationException(HttpMessageNotReadableException ex) {
+        String field = ex.getMessage();
+        Response<String> response = new Response<>();
+        response.addError(ErrorCodes.WRONG_METHOD);
+        response.setMessage(field);
+        response.setData(field);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
     }
 
