@@ -1,19 +1,21 @@
 package com.bbva.wallet.dtos;
 
-import com.bbva.wallet.enums.Currency;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DepositCreatedDTO {
+public class TransactionRequestDTO {
+    @NotNull
+    private Long destinationAccountId;
+    @NotNull
     private Double amount;
-    private Currency currency;
-    private Double balance;
-    private Long accountId;
+    private LocalDateTime transactionDate;
+    private String description;
 }

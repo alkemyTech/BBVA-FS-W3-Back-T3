@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentDTO {
-    @NotNull
-    private Long destinationAccountId;
+public class PaymentRequestDTO {
     @NotNull
     private Double amount;
     @NotNull
