@@ -1,7 +1,6 @@
 package com.bbva.wallet.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -25,7 +24,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Where(clause = "soft_delete = false")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User implements Serializable, UserDetails {
 
     @Id

@@ -18,6 +18,6 @@ public interface AccountService {
     Account createAccount(Currency currency, User userLoggedIn);
     void save(Account sourceAccount);
     Optional<Account> getAccountByUserIdAndCurrency(Long id, Currency currency);
-    Optional<BalanceDTO> getBalance(Long userId);
+    BalanceDTO getBalance(Long userId);
     long count();
   }

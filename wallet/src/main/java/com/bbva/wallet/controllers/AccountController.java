@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/accounts")
@@ -33,9 +32,9 @@ public class AccountController {
     }
 
     @GetMapping("/balance")
-    public ResponseEntity<Optional<BalanceDTO>> getBalance(Authentication authentication) {
+    public ResponseEntity<BalanceDTO> getBalance(Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
-        Optional<BalanceDTO> balanceDTO = accountService.getBalance(userLoggedIn.getId());
+        BalanceDTO balanceDTO = accountService.getBalance(userLoggedIn.getId());
         return ResponseEntity.ok(balanceDTO);
     }
 
