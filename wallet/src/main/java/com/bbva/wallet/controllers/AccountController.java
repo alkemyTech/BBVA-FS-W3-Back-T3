@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
@@ -23,6 +24,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
+
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.getId ")
     @GetMapping("/{userId}")
     public ResponseEntity<Iterable<Account>> getUserAccounts(@PathVariable Long userId) {
         Iterable<Account> entities = accountService.getUserAccounts(userId);
@@ -55,7 +58,9 @@ public class AccountController {
 
     @SneakyThrows
     @PatchMapping("/{id}")
-    public ResponseEntity<Account> updateAccount(@PathVariable("id") Long id, @RequestBody AccountTransactionLimitDto accountTransactionLimitDto, Authentication authentication) {
+    public ResponseEntity<Account> updateAccount(@PathVariable("id") Long id,
+                                                 @Valid @RequestBody AccountTransactionLimitDto accountTransactionLimitDto,
+                                                 Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Account account= accountService.findById(id).orElseThrow(() -> new TransactionException("No existe la cuenta indicada ", ErrorCodes.ACCOUNT_DOESNT_EXIST));
 
