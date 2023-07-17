@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DollarSimulationResultDTO {
-    private double dollarValueInPesos;
+    private double dollarValue;
+    private double dollarValueWithTax;
     private String lastUpdate;
     private double impuestoPais;
     private double retencionGanancias;
