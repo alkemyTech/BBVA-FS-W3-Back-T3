@@ -70,6 +70,11 @@ public class AccountServiceImpl implements AccountService {
         return newAccount;
     }
 
+    @Override
+    public Account createAccount(Currency currency, User userLoggedIn) {
+        return createAccount(currency, userLoggedIn, initialBalance);
+    }
+
     public long count() {
         return accountRepository.count();
     }
