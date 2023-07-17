@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "users")
+@Where(clause = "soft_delete = false")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User implements Serializable, UserDetails {
 
