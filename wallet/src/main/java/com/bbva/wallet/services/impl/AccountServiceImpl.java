@@ -1,6 +1,6 @@
 package com.bbva.wallet.services.impl;
 
-import com.bbva.wallet.dtos.BalanceDTO;
+import com.bbva.wallet.dtos.BalanceResponseDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.FixedTermDeposits;
 import com.bbva.wallet.entities.Transaction;
@@ -98,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public BalanceDTO getBalance(Long userId) {
+    public BalanceResponseDTO getBalance(Long userId) {
         Optional<Account> optionalUsdAccount = accountRepository.findByUserIdAndCurrency(userId, Currency.USD);
         Optional<Account> optionalArsAccount = accountRepository.findByUserIdAndCurrency(userId, Currency.ARS);
 
@@ -120,7 +120,7 @@ public class AccountServiceImpl implements AccountService {
             fixedTermDeposits = fixedTermDepositsRepository.findAllByAccount(arsAccount);
         }
 
-        return BalanceDTO.builder()
+        return BalanceResponseDTO.builder()
                     .accountArs(balanceArs)
                     .accountUsd(balanceUsd)
                     .history(transactions)

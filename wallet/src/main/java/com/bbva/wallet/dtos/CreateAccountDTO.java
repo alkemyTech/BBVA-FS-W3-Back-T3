@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountDTO {
+public class CreateAccountDTO {
 
     @NotNull
     @Enumerated(EnumType.STRING)
