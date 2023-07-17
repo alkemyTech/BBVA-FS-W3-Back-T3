@@ -18,7 +18,7 @@ public class DollarSimulationController {
 
     private final DollarSimulationService dollarSimulationService;
 
-    @PostMapping("/simulateUsdToArs")
+    @PostMapping("/simulateDollarPurchase")
     public ResponseEntity<DollarSimulationResultDTO> simulateDollarTransaction(@RequestBody @Valid DollarSimulationDTO dto) {
         DollarSimulationResultDTO resultDTO = dollarSimulationService.simulateDollarTransaction(dto);
         return ResponseEntity.ok(resultDTO);
