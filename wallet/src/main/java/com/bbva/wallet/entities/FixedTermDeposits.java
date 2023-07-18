@@ -24,20 +24,18 @@ public class FixedTermDeposits implements Serializable{
     private Long id;
 
     @NotNull
-    private double amount;
+    private Double amount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
     @NotNull
-    private double interest;
+    private Double interest;
 
     @CreationTimestamp
-    @NotNull
     private LocalDateTime creationDate;
 
     @Timestamp
-    @NotNull
     private LocalDateTime closingDate;
 }
