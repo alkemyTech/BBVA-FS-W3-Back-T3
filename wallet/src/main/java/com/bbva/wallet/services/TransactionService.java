@@ -5,7 +5,6 @@ import com.bbva.wallet.dtos.TransactionRequestDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import java.util.List;
-
 import com.bbva.wallet.exeptions.TransactionException;
 
 import java.util.Optional;
