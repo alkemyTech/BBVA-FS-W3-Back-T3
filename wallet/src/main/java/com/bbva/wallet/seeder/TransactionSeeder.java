@@ -4,7 +4,7 @@ import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.TypeTransaction;
 import com.bbva.wallet.repositories.AccountRepository;
-import com.bbva.wallet.repositories.TransactionsRepository;
+import com.bbva.wallet.repositories.TransactionRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class TransactionSeeder {
     private final AccountSeeder accountSeeder;
-    private final TransactionsRepository transactionsRepository;
+    private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
 
     private final String[] descriptions = {
@@ -55,7 +55,7 @@ public class TransactionSeeder {
     };
     @PostConstruct
     public void seedTransactions() {
-        if(transactionsRepository.count() != 0) {
+        if(transactionRepository.count() != 0) {
             return;
         }
         List<Account> accounts = accountSeeder.seedAccounts();
@@ -65,7 +65,7 @@ public class TransactionSeeder {
 
     private void makeTransaction(Account account) {
         Double randomAmount = Math.round((new Random().nextDouble() * account.getBalance() ) * 100.0) / 100.0;
-        Integer randomTypeIndex = new Random().nextInt(types.length);
+        int randomTypeIndex = new Random().nextInt(types.length);
 
         createTransaction(
                 account,
@@ -87,6 +87,6 @@ public class TransactionSeeder {
                 .type(type)
                 .description(description)
                 .build();
-        transactionsRepository.save(transaction);
+        transactionRepository.save(transaction);
     }
 }

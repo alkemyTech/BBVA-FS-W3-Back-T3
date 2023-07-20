@@ -54,6 +54,8 @@ Estos son los roles que existen en el sistema:
   * El usuario `admin`,` Nicolas Tagliafico` y `Otamendi` tienen `2 accounts asociadas`, una en ARS y otra en USD
   * En la tabla de usuarios, la columna `Account` indica la moneda de la cuenta asociada
 * _**Transactions**:_
+  * Las transacciones de prueba `solo se cargan si la TABLA de transacciones esta vacia`
+  * No es necesario borrar la DB
   * Para cargar las transacciones asociadas, las accounts de prueba:
     * si no existen: se cargan antes `automaticamente`
     * si existen: se traen de la DB
