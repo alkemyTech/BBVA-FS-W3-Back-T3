@@ -77,7 +77,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(newAccount);
         return newAccount;
     }
-
     public long count() {
         return accountRepository.count();
     }
