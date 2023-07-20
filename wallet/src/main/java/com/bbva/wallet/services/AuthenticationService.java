@@ -4,9 +4,12 @@ import com.bbva.wallet.dtos.JwtAuthResponse;
 import com.bbva.wallet.dtos.UserLogInDTO;
 import com.bbva.wallet.dtos.UserSignUpDTO;
 import com.bbva.wallet.entities.User;
+import com.bbva.wallet.exeptions.ErrorCodes;
+import com.bbva.wallet.exeptions.UserException;
 import com.bbva.wallet.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.bbva.wallet.entities.Role;
 import com.bbva.wallet.enums.Currency;
@@ -54,14 +57,21 @@ public class AuthenticationService {
 
     }
 
-    public JwtAuthResponse logIn(UserLogInDTO userLogInDTO) {
+    public JwtAuthResponse logIn(UserLogInDTO userLogInDTO) throws UserException {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userLogInDTO.getEmail(), userLogInDTO.getPassword()));
-        var user = userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var user = userRepository.findByEmail(userLogInDTO.getEmail());
 
-        var jwt = jwtService.generateToken(user);
-        return JwtAuthResponse.builder().token(jwt).user(user).build();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userLogInDTO.getEmail(), userLogInDTO.getPassword()));
+        } catch (BadCredentialsException e) {
+            var message = (user.isEmpty()) ? "User not found" : "Bad login credentials";
+            var errorCode = (user.isEmpty()) ? ErrorCodes.USER_NOT_FOUND : ErrorCodes.BAD_CREDENTIALS;
+            throw new UserException(message, errorCode);
+        }
+
+        var jwt = jwtService.generateToken(user.get());
+        return JwtAuthResponse.builder().token(jwt).user(user.get()).build();
 
     }
 }
