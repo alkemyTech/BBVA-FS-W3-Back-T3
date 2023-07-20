@@ -4,6 +4,9 @@ import com.bbva.wallet.dtos.BalanceDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.enums.Currency;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +22,5 @@ public interface AccountService {
     Optional<Account> getAccountByUserIdAndCurrency(Long id, Currency currency);
     Optional<BalanceDTO> getBalance(Long userId);
     long count();
-  }
+    Page<Account> getAllAccounts(Pageable pageable);
+}

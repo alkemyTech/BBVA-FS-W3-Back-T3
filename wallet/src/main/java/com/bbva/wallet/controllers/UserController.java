@@ -5,7 +5,6 @@ import com.bbva.wallet.entities.User;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.exeptions.UserException;
-import com.bbva.wallet.entities.User;
 import com.bbva.wallet.services.UserService;
 import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
