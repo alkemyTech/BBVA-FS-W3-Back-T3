@@ -9,6 +9,13 @@ import com.bbva.wallet.services.UserService;
 import com.bbva.wallet.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Objects;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -27,17 +32,6 @@ public class UserController {
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
 
-
-
-   @PreAuthorize("hasAuthority('ADMIN')")
-   @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> users = userService.getAll();
-        return ResponseEntity.ok(users);
-    }
-
-
-
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id ) {
@@ -45,6 +39,20 @@ public class UserController {
         accountService.softDeleteByUserId(id);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping
+    public ResponseEntity<PagedModel<EntityModel<User>>> getAllUser(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            PagedResourcesAssembler<User> pagedAssembler) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<User> userPage = userService.getAllUser(pageable);
+
+        PagedModel<EntityModel<User>> pageModel = pagedAssembler.toModel(userPage);
+        return ResponseEntity.ok(pageModel);
+    }
+
 
     @SneakyThrows
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId")
@@ -71,4 +79,3 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 }
-
