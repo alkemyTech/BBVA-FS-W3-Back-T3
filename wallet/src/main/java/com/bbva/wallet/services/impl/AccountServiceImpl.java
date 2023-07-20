@@ -126,4 +126,9 @@ public class AccountServiceImpl implements AccountService {
             return Optional.empty();
         }
     }
+
+    @Override
+    public List<Account> findAll() {
+        return accountRepository.findAll();
+    }
 }
