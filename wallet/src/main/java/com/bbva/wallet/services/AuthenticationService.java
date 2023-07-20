@@ -12,7 +12,6 @@ import com.bbva.wallet.entities.Role;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.repositories.RoleRepository;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
@@ -48,7 +46,6 @@ public class AuthenticationService {
                 .build();
 
         userRepository.save(user);
-
         accountService.createAccount(Currency.ARS, user);
         accountService.createAccount(Currency.USD, user);
 
@@ -63,10 +60,8 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(userLogInDTO.getEmail(), userLogInDTO.getPassword()));
         var user = userRepository.findByEmail(userLogInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
-
         var jwt = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwt).user(user).build();
 
     }
-
 }

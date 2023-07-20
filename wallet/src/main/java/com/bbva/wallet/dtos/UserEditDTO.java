@@ -5,17 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionDto {
+public class UserEditDTO {
+
+
     @NotNull
-    private Long destinationAccountId;
+    private String firstName;
+
     @NotNull
-    private Double amount;
-    private LocalDateTime transactionDate;
-    private String description;
+    private String lastName;
+
+    @NotNull
+    private String password;
 }
