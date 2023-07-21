@@ -13,9 +13,14 @@ import com.bbva.wallet.services.AccountService;
 import com.bbva.wallet.services.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.bbva.wallet.utils.Utils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -30,6 +35,7 @@ import java.util.List;
 public class TransactionController {
     private final TransactionService transactionService;
     private final AccountService accountService;
+    private final Utils utils;
 
     @Operation(summary = "Crear una transaccion en pesos",description = "Crear una transaccion en pesos")
     @PostMapping("/sendArs")
@@ -42,6 +48,7 @@ public class TransactionController {
     public ResponseEntity<Transaction> sendUsd(@RequestBody @Valid TransactionDTO transactionDto, Authentication authentication) {
         return send(transactionDto, Currency.USD, authentication);
     }
+
     @SneakyThrows
     private ResponseEntity<Transaction> send(@RequestBody TransactionDTO transactionDto, Currency currency, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
@@ -120,10 +127,18 @@ public class TransactionController {
     @Operation(summary = "Listar todas las transacciones del usuario",description = "Listar todas las transacciones del usuario")
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
     @GetMapping("/userId/{id}")
-    public ResponseEntity<Iterable<Transaction>> getUserAccounts( @PathVariable Long id) {
+    public ResponseEntity<PagedModel<EntityModel<Transaction>>> getUserTransactions(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            PagedResourcesAssembler<Transaction> pagedAssembler) {
+
         List<Account> accounts = accountService.findByUserId(id);
         Iterable<Transaction> transactions = transactionService.getUserTransaction(accounts);
-        return ResponseEntity.ok(transactions);
-    }
 
+        Page<Transaction> transactionPage = utils.paginateTransactions(transactions, page, size);
+
+        PagedModel<EntityModel<Transaction>> pagedModel = pagedAssembler.toModel(transactionPage);
+        return ResponseEntity.ok(pagedModel);
+    }
 }

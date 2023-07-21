@@ -12,6 +12,8 @@ import com.bbva.wallet.repositories.TransactionRepository;
 import com.bbva.wallet.services.AccountService;
 import com.bbva.wallet.utils.Utils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -58,6 +60,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Page<Account> getAllAccounts(Pageable pageable) {
+        return accountRepository.findAll(pageable);
+    }
+
+
+    @Override
     public Account createAccount(Currency currency, User userLoggedIn, Double... balance) {
         Account newAccount = Account.builder()
                 .currency(currency)
@@ -69,7 +77,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(newAccount);
         return newAccount;
     }
-
     public long count() {
         return accountRepository.count();
     }
@@ -118,5 +125,10 @@ public class AccountServiceImpl implements AccountService {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<Account> findAll() {
+        return accountRepository.findAll();
     }
 }

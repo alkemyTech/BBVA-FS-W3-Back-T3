@@ -6,8 +6,8 @@ import com.bbva.wallet.dtos.TransactionDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import java.util.List;
-import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.exeptions.TransactionException;
+
 
 import java.util.Optional;
 public interface TransactionService {
@@ -16,5 +16,5 @@ public interface TransactionService {
     PaymentCreatedDTO payment(Account sourceAccount, Double amount) throws TransactionException;
     Optional<Transaction> findById(Long id);
     Transaction save(Transaction transaction);
-    public List<Transaction> getUserTransaction(List<Account> accounts);
+    List<Transaction> getUserTransaction(List<Account> accounts);
 }
