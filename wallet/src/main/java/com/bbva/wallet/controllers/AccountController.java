@@ -10,6 +10,8 @@ import com.bbva.wallet.exeptions.AccountException;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.AccountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,17 +20,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
+@Tag(name = "Accounts")
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
+    @Operation(summary = "Ver detalle de una cuenta",description = "Ver detalle de una cuenta")
     @GetMapping("/{userId}")
     public ResponseEntity<Iterable<Account>> getUserAccounts(@PathVariable Long userId) {
         Iterable<Account> entities = accountService.getUserAccounts(userId);
         return ResponseEntity.ok(entities);
     }
 
+    @Operation(summary = "Obtener balance",description = "Obtener balance")
     @GetMapping("/balance")
     public ResponseEntity<Optional<BalanceDTO>> getBalance(Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
@@ -36,6 +41,7 @@ public class AccountController {
         return ResponseEntity.ok(balanceDTO);
     }
 
+    @Operation(summary = "Crear una cuenta",description = "Crear una cuenta")
     @SneakyThrows
     @PostMapping
     public ResponseEntity<Account> createAccount(@Valid @RequestBody AccountDTO accountDTO, Authentication authentication) {
@@ -53,6 +59,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.createAccount(dtoCurrency, userLoggedIn));
     }
 
+    @Operation(summary = "Modificar una cuenta existente",description = "Modificar una cuenta existente")
     @SneakyThrows
     @PatchMapping("/{id}")
     public ResponseEntity<Account> updateAccount(@PathVariable("id") Long id, @RequestBody AccountTransactionLimitDto accountTransactionLimitDto, Authentication authentication) {

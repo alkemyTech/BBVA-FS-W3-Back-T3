@@ -5,9 +5,10 @@ import com.bbva.wallet.entities.User;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.exeptions.UserException;
-import com.bbva.wallet.entities.User;
 import com.bbva.wallet.services.UserService;
 import com.bbva.wallet.services.AccountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Objects;
 
+@Tag(name = "Users")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class UserController {
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
 
+    @Operation(summary = "Eliminar un usuario",description = "Eliminar un usuario")
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id ) {
@@ -40,6 +43,9 @@ public class UserController {
         accountService.softDeleteByUserId(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    @Operation(summary = "Listar todos los usuarios",description = "Listar todos los usuarios")
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<User>>> getAllUser(
@@ -54,7 +60,7 @@ public class UserController {
         return ResponseEntity.ok(pageModel);
     }
 
-
+    @Operation(summary = "Obtener usuario",description = "Obtener usuario")
     @SneakyThrows
     @GetMapping("/{id}")
     public ResponseEntity<User> allUsers(@PathVariable("id") Long id, Authentication authentication) {
@@ -67,6 +73,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "Editar un usuario",description = "Editar un usuario")
     @SneakyThrows
     @PatchMapping("/{id}")
     public ResponseEntity<User> editUser(@PathVariable("id") Long id, @RequestBody UserEditDTO userEditDTO, Authentication authentication) {

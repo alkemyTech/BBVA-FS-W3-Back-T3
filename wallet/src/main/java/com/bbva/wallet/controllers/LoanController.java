@@ -5,6 +5,8 @@ import com.bbva.wallet.dtos.LoanResponseDTO;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.LoanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -14,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Loan")
 @RestController
 @RequestMapping("/loan")
 @RequiredArgsConstructor
 public class LoanController {
     private final LoanService loanService;
 
+    @Operation(summary = "Crear un prestamo",description = "Crear un prestamo")
     @SneakyThrows
     @PostMapping("/simulate")
     public ResponseEntity<LoanResponseDTO> simulateLoan(@RequestBody @Valid LoanRequestDTO loanRequestDTO) {
