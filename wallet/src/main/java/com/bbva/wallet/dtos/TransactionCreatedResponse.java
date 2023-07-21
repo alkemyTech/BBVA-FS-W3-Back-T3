@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentCreatedDTO {
+public class TransactionCreatedResponse {
     private Double amount;
     private Currency currency;
     private Double balance;

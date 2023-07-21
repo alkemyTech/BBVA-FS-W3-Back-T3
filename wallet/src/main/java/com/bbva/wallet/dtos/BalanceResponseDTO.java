@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class BalanceDTO {
+public class BalanceResponseDTO {
     private Double accountArs;
     private Double accountUsd;
     private List<Transaction> history;
