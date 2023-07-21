@@ -1,6 +1,6 @@
 package com.bbva.wallet.services.impl;
 
-import com.bbva.wallet.dtos.BalanceDTO;
+import com.bbva.wallet.dtos.BalanceResponseDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.FixedTermDeposits;
 import com.bbva.wallet.entities.Transaction;
@@ -77,6 +77,12 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(newAccount);
         return newAccount;
     }
+
+    @Override
+    public Account createAccount(Currency currency, User userLoggedIn) {
+        return createAccount(currency, userLoggedIn, initialBalance);
+    }
+
     public long count() {
         return accountRepository.count();
     }
@@ -100,31 +106,34 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Optional<BalanceDTO> getBalance(Long userId) {
-        List<Account> accountList = accountRepository.findByUserId(userId);
+    public BalanceResponseDTO getBalance(Long userId) {
+        Optional<Account> optionalUsdAccount = accountRepository.findByUserIdAndCurrency(userId, Currency.USD);
+        Optional<Account> optionalArsAccount = accountRepository.findByUserIdAndCurrency(userId, Currency.ARS);
 
-        Optional<Account> optionalUsdAccount = accountList.stream().filter(account -> account.getCurrency().equals(Currency.USD)).findFirst();
-        Optional<Account> optionalArsAccount = accountList.stream().filter(account -> account.getCurrency().equals(Currency.ARS)).findFirst();
+        List<Transaction> transactions = new ArrayList<>();
+        List<FixedTermDeposits> fixedTermDeposits = new ArrayList<>();
+        Double balanceArs = 0.0;
+        Double balanceUsd = 0.0;
 
-        if (optionalUsdAccount.isPresent() && optionalArsAccount.isPresent()) {
+        if(optionalUsdAccount.isPresent()) {
             Account usdAccount = optionalUsdAccount.get();
-            Account arsAccount = optionalArsAccount.get();
-
-            List<Transaction> transactions = new ArrayList<>();
+            balanceUsd = usdAccount.getBalance();
             transactions.addAll(transactionRepository.findAllByAccount(usdAccount));
+        }
+
+        if(optionalArsAccount.isPresent()) {
+            Account arsAccount = optionalArsAccount.get();
+            balanceArs = arsAccount.getBalance();
             transactions.addAll(transactionRepository.findAllByAccount(arsAccount));
+            fixedTermDeposits = fixedTermDepositsRepository.findAllByAccount(arsAccount);
+        }
 
-            List<FixedTermDeposits> fixedTermDeposits = fixedTermDepositsRepository.findAllByAccount(arsAccount);
-
-            return Optional.of(BalanceDTO.builder()
-                    .accountArs(arsAccount.getBalance())
-                    .accountUsd(usdAccount.getBalance())
+        return BalanceResponseDTO.builder()
+                    .accountArs(balanceArs)
+                    .accountUsd(balanceUsd)
                     .history(transactions)
                     .fixedTerms(fixedTermDeposits)
-                    .build());
-        } else {
-            return Optional.empty();
-        }
+                    .build();
     }
 
     @Override

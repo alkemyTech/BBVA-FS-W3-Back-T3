@@ -3,6 +3,7 @@ package com.bbva.wallet.exeptions;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Objects;
 
 @RestControllerAdvice
 @RestController
@@ -44,6 +46,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ResponseEntity<Response<String>> handleValidationException(HttpMessageNotReadableException ex) {
+        String field = ex.getMessage();
+        Response<String> response = new Response<>();
+        response.addError(ErrorCodes.WRONG_METHOD);
+        response.setMessage(field);
+        response.setData(field);
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Response<String>> handleValidationException(ConstraintViolationException ex) {
@@ -55,8 +68,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Response<String>> handleValidationException(MethodArgumentNotValidException ex) {
-        String error = String.valueOf(ex.getBody());
-        String field = ex.getParameter().getParameterName();
+        String error = ex.getBody().getDetail();
+        String field = Objects.requireNonNull(ex.getBindingResult().getFieldError()).getField();
         return getResponseResponseEntity(error, field, ErrorCodes.INVALID_VALUE, HttpStatus.BAD_REQUEST);
     }
 

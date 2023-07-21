@@ -1,7 +1,7 @@
 package com.bbva.wallet.controllers;
 
-import com.bbva.wallet.dtos.AccountDTO;
-import com.bbva.wallet.dtos.BalanceDTO;
+import com.bbva.wallet.dtos.CreateAccountDTO;
+import com.bbva.wallet.dtos.BalanceResponseDTO;
 import com.bbva.wallet.dtos.AccountTransactionLimitDto;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.User;
@@ -21,10 +21,11 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/accounts")
@@ -32,6 +33,7 @@ import java.util.Optional;
 public class AccountController {
     private final AccountService accountService;
 
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.getId ")
     @GetMapping("/{userId}")
     public ResponseEntity<Iterable<Account>> getUserAccounts(@PathVariable Long userId) {
         Iterable<Account> entities = accountService.getUserAccounts(userId);
@@ -39,19 +41,19 @@ public class AccountController {
     }
 
     @GetMapping("/balance")
-    public ResponseEntity<Optional<BalanceDTO>> getBalance(Authentication authentication) {
+    public ResponseEntity<BalanceResponseDTO> getBalance(Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
-        Optional<BalanceDTO> balanceDTO = accountService.getBalance(userLoggedIn.getId());
-        return ResponseEntity.ok(balanceDTO);
+        BalanceResponseDTO balanceResponseDTO = accountService.getBalance(userLoggedIn.getId());
+        return ResponseEntity.ok(balanceResponseDTO);
     }
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<Account> createAccount(@Valid @RequestBody AccountDTO accountDTO, Authentication authentication) {
+    public ResponseEntity<Account> createAccount(@Valid @RequestBody CreateAccountDTO createAccountDTO, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Long user_id = userLoggedIn.getId();
 
-        Currency dtoCurrency = accountDTO.getCurrency();
+        Currency dtoCurrency = createAccountDTO.getCurrency();
 
         var userAccounts = accountService.getUserAccounts(user_id);
 
@@ -64,11 +66,13 @@ public class AccountController {
 
     @SneakyThrows
     @PatchMapping("/{id}")
-    public ResponseEntity<Account> updateAccount(@PathVariable("id") Long id, @RequestBody AccountTransactionLimitDto accountTransactionLimitDto, Authentication authentication) {
+    public ResponseEntity<Account> updateAccount(@PathVariable("id") Long id,
+                                                 @Valid @RequestBody AccountTransactionLimitDto accountTransactionLimitDto,
+                                                 Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Account account= accountService.findById(id).orElseThrow(() -> new TransactionException("No existe la cuenta indicada ", ErrorCodes.ACCOUNT_DOESNT_EXIST));
 
-        if (account.getUser().getId()!=userLoggedIn.getId()){
+        if (!Objects.equals(account.getUser().getId(), userLoggedIn.getId())){
             throw new AccountException("No se puede modificar una cuenta ajena ", ErrorCodes.ACCOUNT_DOESNT_EXIST);
         }
 
