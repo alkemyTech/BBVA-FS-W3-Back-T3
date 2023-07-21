@@ -87,6 +87,7 @@ public class AccountController {
         return ResponseEntity.ok(account);
 
     }
+    @Operation(summary = "Obtener cuentas",description = "Obtener cuentas")
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<Account>>> getAllAccounts(
