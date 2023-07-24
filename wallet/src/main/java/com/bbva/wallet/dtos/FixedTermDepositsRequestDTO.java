@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Builder
 @Data
-public class FixedTermDepositsDTO {
+public class FixedTermDepositsRequestDTO {
     @NotNull
     private Double amount;
 

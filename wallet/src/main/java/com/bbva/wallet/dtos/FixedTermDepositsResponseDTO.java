@@ -3,14 +3,14 @@ package com.bbva.wallet.dtos;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Builder
 @Data
-public class FixedTermDepositsSimulationDTO {
+public class FixedTermDepositsResponseDTO {
     private Double amount;
     private Double interest;
     private Double total;
-    private LocalDateTime closingDate;
-    private LocalDateTime creationDate;
+    private LocalDate closingDate;
+    private LocalDate creationDate;
 }
