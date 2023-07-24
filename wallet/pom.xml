@@ -87,6 +87,7 @@
 			<optional>true</optional>
 		</dependency>
 
+
 		<!-- HATEOS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
