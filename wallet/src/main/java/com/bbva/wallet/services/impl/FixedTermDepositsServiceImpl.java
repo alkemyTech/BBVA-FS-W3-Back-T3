@@ -28,7 +28,7 @@ public class FixedTermDepositsServiceImpl implements FixedTermDepositsService {
         if (account.getBalance() <= fixedTermDepositsDTO.getAmount()) {
             throw new FixedTermDepositsException("Insufficient funds", ErrorCodes.INSUFFICIENT_FUNDS);
         }
-        if (LocalDateTime.now().plusDays(30L).isAfter(fixedTermDepositsDTO.getClosingDate())) {
+        if (LocalDateTime.now().plusDays(30L).isAfter(fixedTermDepositsDTO.getClosingDate().atStartOfDay())) {
             throw new FixedTermDepositsException("La fecha de cierre debe ser al menos 30 días a partir de ahora.", ErrorCodes.INVALID_CLOSING_DATE);
         }
 
@@ -36,7 +36,7 @@ public class FixedTermDepositsServiceImpl implements FixedTermDepositsService {
                 .amount(fixedTermDepositsDTO.getAmount())
                 .account(account)
                 .interest(dailyInterestRate)
-                .closingDate(fixedTermDepositsDTO.getClosingDate())
+                .closingDate(fixedTermDepositsDTO.getClosingDate().atStartOfDay())
                 .build();
 
         account.setBalance(account.getBalance() - fixedTermDepositsDTO.getAmount());
@@ -46,19 +46,19 @@ public class FixedTermDepositsServiceImpl implements FixedTermDepositsService {
     }
 
     public FixedTermDepositsSimulationDTO createFixedTermDeposit(FixedTermDepositsDTO fixedTermDepositsDTO) throws FixedTermDepositsException{
-        if (LocalDateTime.now().plusDays(30L).isAfter(fixedTermDepositsDTO.getClosingDate())) {
+        if (LocalDateTime.now().plusDays(30L).isAfter(fixedTermDepositsDTO.getClosingDate().atStartOfDay())) {
             throw new FixedTermDepositsException("La fecha de cierre debe ser al menos 30 días a partir de ahora.", ErrorCodes.INVALID_CLOSING_DATE);
         }
         return FixedTermDepositsSimulationDTO.builder()
                 .amount(fixedTermDepositsDTO.getAmount())
                 .interest(dailyInterestRate)
-                .closingDate(fixedTermDepositsDTO.getClosingDate())
+                .closingDate(fixedTermDepositsDTO.getClosingDate().atStartOfDay())
                 .creationDate(LocalDateTime.now())
                 .total(
                         utils.calculateTotal(
                             fixedTermDepositsDTO.getAmount(),
                                 dailyInterestRate,
-                                fixedTermDepositsDTO.getClosingDate(),
+                                fixedTermDepositsDTO.getClosingDate().atStartOfDay(),
                                 LocalDateTime.now()
                         )
                 )
