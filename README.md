@@ -1,8 +1,31 @@
-# Datos de Prueba
+# T3-Wallet
+Este es un proyecto de una desarrollado en Java Spring Boot. 
+Proporciona una plataforma para administrar cuentas y realizar transacciones en diferentes monedas.
+
+## Requisitos
+Para probar este proyecto es necesario:
+- Tener instalado [Java 17] (https://www.oracle.com/java/technologies/downloads/#java17)
+- Tener instalado [Maven] (https://maven.apache.org/download.cgi)
+- Tener instalado [MySQL] (https://dev.mysql.com/downloads/mysql/)
+
+## Testeo
+
+Para testear el proyecto:
+1. Clonar el repositorio
+2. Abrir una terminal en la carpeta raiz del proyecto
+3. Ejecutar el comando `mvn spring-boot:run` o abrir IDE de preferencia y ejecutar
+4. Abrir Postman e importar:
+   1. el environment `T3-Wallet.postman_environment.json` y seleccionarlo
+   2. la coleccion de requests `T3-Wallet.postman_collection.json`
+5. Ejecutar los requests de la coleccion
+
+
+## Datos de Prueba
 
 Este archivo contiene los datos de prueba para el proyecto.
 
 ## Users
+Listado de usuarios de prueba, con sus respectivos roles y tipo de cuentas asociadas.
 
 | Name                 | Email                         | Role  | Account     |
 |----------------------|-------------------------------|-------|-------------|
@@ -29,7 +52,7 @@ Este archivo contiene los datos de prueba para el proyecto.
 | admin                | admin@admin.com               | ADMIN | **ARS<br/>USD** |
 
 
-## Roles
+### Roles
 
 Estos son los roles que existen en el sistema:
 
@@ -38,18 +61,26 @@ Estos son los roles que existen en el sistema:
 | ADMIN | Full access                                             |
 | USER  | Solo acceso a los datos publicos o asociados al usuario |
 
-## Notas
+### Notas
 
 * _**Usuario:**_
   * Las contraseñas de todos los usuarios con rol USER es `123`.
   * Las contraseñas de todos los usuarios con rol ADMIN es `admin`.
   * Para cargar los datos de **usuarios** de prueba (por unica vez), la base de datos debe estar vacía.
-* **Accounts:**
+* _**Accounts:**_
   * Para cargar las cuentas asociadas, los usuarios de prueba:
     * si no existen: se cargan antes `automaticamente`
     * si existen: se traen de la DB
-  * Cada account tiene un `Balance inicial entre 0 y 500mil _random_`
+  * Cada account tiene un `Balance inicial entre 0 y 500mil random`
   * Todos los users tienen `al menos 1 account asociada`, ya sea en ARS o USD
   * El usuario `admin`,` Nicolas Tagliafico` y `Otamendi` tienen `2 accounts asociadas`, una en ARS y otra en USD
   * En la tabla de usuarios, la columna `Account` indica la moneda de la cuenta asociada
+* _**Transactions**:_
+  * Las transacciones de prueba `solo se cargan si la TABLA de transacciones esta vacia`
+  * No es necesario borrar la DB
+  * Para cargar las transacciones asociadas, las accounts de prueba:
+    * si no existen: se cargan antes `automaticamente`
+    * si existen: se traen de la DB
+  * Respetan el balance de la cuenta y no se pasan del limite de transferencia
+  * El balance de la cuenta se ve afectado por las transacciones
   

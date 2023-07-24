@@ -11,15 +11,21 @@ import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.AccountService;
 import com.bbva.wallet.services.TransactionService;
+import com.bbva.wallet.utils.Utils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/transactions")
@@ -27,20 +33,21 @@ import java.util.List;
 public class TransactionController {
     private final TransactionService transactionService;
     private final AccountService accountService;
+    private final Utils utils;
 
     @PostMapping("/sendArs")
-    public ResponseEntity<Transaction> sendArs(@RequestBody @Valid TransactionDTO transactionDto, Authentication authentication) {
+    public ResponseEntity<Transaction> sendArs(@RequestBody @Valid TransactionRequestDTO transactionDto, Authentication authentication) {
         return send(transactionDto, Currency.ARS, authentication);
     }
 
     @PostMapping("/sendUsd")
-    public ResponseEntity<Transaction> sendUsd(@RequestBody @Valid TransactionDTO transactionDto, Authentication authentication) {
+    public ResponseEntity<Transaction> sendUsd(@RequestBody @Valid TransactionRequestDTO transactionDto, Authentication authentication) {
         return send(transactionDto, Currency.USD, authentication);
     }
+
     @SneakyThrows
-    private ResponseEntity<Transaction> send(@RequestBody TransactionDTO transactionDto, Currency currency, Authentication authentication) {
-        User userLoggedIn = (User) authentication.getPrincipal();
-        Account sourceAccount = accountService.findByUserIdAndCurrency(userLoggedIn.getId(), currency).orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + currency, ErrorCodes.ACCOUNT_DOESNT_EXIST));
+    private ResponseEntity<Transaction> send(@RequestBody TransactionRequestDTO transactionDto, Currency currency, Authentication authentication) {
+        Account sourceAccount = getUserLoggedInAccount(authentication, currency);
         Account destinationAccount = accountService.findById(transactionDto.getDestinationAccountId()).orElseThrow(() -> new AccountException("La cuenta destino no existe ", ErrorCodes.ACCOUNT_DOESNT_EXIST));
 
         Transaction payment = transactionService.send(transactionDto, sourceAccount, destinationAccount);
@@ -51,29 +58,28 @@ public class TransactionController {
     //------------------------------------------Deposit--------------------------------------------------------------
     @SneakyThrows
     @PostMapping("/deposit")
-    public ResponseEntity<DepositCreatedDTO> deposit(@RequestBody DepositDTO depositDTO, Authentication authentication) {
-        User userLoggedIn = (User) authentication.getPrincipal();
-        Account sourceAccount = accountService.findByUserIdAndCurrency(userLoggedIn.getId(), depositDTO.getCurrency())
-                .orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + depositDTO.getCurrency(), ErrorCodes.ACCOUNT_DOESNT_EXIST));
+    public ResponseEntity<TransactionCreatedResponse> deposit(@Valid @RequestBody DepositRequestDTO depositDTO, Authentication authentication) {
+        Account sourceAccount = getUserLoggedInAccount(authentication, depositDTO.getCurrency());
 
-        accountService.save(sourceAccount);
-
-        DepositCreatedDTO depositCreatedDTO = transactionService.deposit(sourceAccount, depositDTO.getAmount());
-        return ResponseEntity.ok(depositCreatedDTO);
+        TransactionCreatedResponse depositCreatedResponse = transactionService.deposit(sourceAccount, depositDTO.getAmount());
+        return ResponseEntity.ok(depositCreatedResponse);
     }
     //------------------------------------------Payment--------------------------------------------------------------
     @SneakyThrows
     @PostMapping("/payment")
-    public ResponseEntity<PaymentCreatedDTO> payment(@RequestBody PaymentDTO paymentDTO, Authentication authentication) {
-        User userLoggedIn = (User) authentication.getPrincipal();
-        Account sourceAccount = accountService.findByUserIdAndCurrency(userLoggedIn.getId(), paymentDTO.getCurrency())
-                .orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + paymentDTO.getCurrency(), ErrorCodes.ACCOUNT_DOESNT_EXIST));
+    public ResponseEntity<TransactionCreatedResponse> payment(@Valid @RequestBody PaymentRequestDTO paymentDTO, Authentication authentication) {
+        Account sourceAccount = getUserLoggedInAccount(authentication, paymentDTO.getCurrency());
 
-        accountService.save(sourceAccount);
-
-        PaymentCreatedDTO paymentCreatedDTO = transactionService.payment(sourceAccount, paymentDTO.getAmount());
+        TransactionCreatedResponse paymentCreatedDTO = transactionService.payment(sourceAccount, paymentDTO.getAmount());
         return ResponseEntity.ok(paymentCreatedDTO);
     }
+
+    private Account getUserLoggedInAccount(Authentication authentication, Currency dtoCurrency) throws AccountException {
+        User userLoggedIn = (User) authentication.getPrincipal();
+        return accountService.findByUserIdAndCurrency(userLoggedIn.getId(), dtoCurrency)
+                .orElseThrow(() -> new AccountException("El usuario no posee una cuenta en " + dtoCurrency, ErrorCodes.ACCOUNT_DOESNT_EXIST));
+    }
+
 
     @SneakyThrows
     @GetMapping("/{id}")
@@ -93,12 +99,14 @@ public class TransactionController {
 
     @SneakyThrows
     @PatchMapping("/{id}")
-    public ResponseEntity<Transaction> updateTransaction(@PathVariable("id") Long id, @RequestBody TransactionDescriptionDto transactionDescriptionDto, Authentication authentication) {
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable("id") Long id,
+                                                         @Valid @RequestBody TransactionDescriptionDto transactionDescriptionDto,
+                                                         Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
         Transaction transaction= transactionService.findById(id).orElseThrow(() -> new TransactionException("No existe la transaccion indicada ", ErrorCodes.TRANSACTION_DOESNT_EXIST));
         Account sourceAccount = accountService.findById(transaction.getAccount().getId()).orElseThrow(() -> new AccountException("No existe la cuenta ", ErrorCodes.ACCOUNT_DOESNT_EXIST));
 
-        if (sourceAccount.getUser().getId()!=userLoggedIn.getId()){
+        if (!Objects.equals(sourceAccount.getUser().getId(), userLoggedIn.getId())){
            throw new TransactionException("No se puede modificar una transaccion ajena ", ErrorCodes.TRANSACTION_DOESNT_EXIST);
         }
 
@@ -108,14 +116,20 @@ public class TransactionController {
        return ResponseEntity.ok(transaction);
 
     }
-
-
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
+    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId")
     @GetMapping("/userId/{id}")
-    public ResponseEntity<Iterable<Transaction>> getUserAccounts( @PathVariable Long id) {
+    public ResponseEntity<PagedModel<EntityModel<Transaction>>> getUserTransactions(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            PagedResourcesAssembler<Transaction> pagedAssembler) {
+
         List<Account> accounts = accountService.findByUserId(id);
         Iterable<Transaction> transactions = transactionService.getUserTransaction(accounts);
-        return ResponseEntity.ok(transactions);
-    }
 
+        Page<Transaction> transactionPage = utils.paginateTransactions(transactions, page, size);
+
+        PagedModel<EntityModel<Transaction>> pagedModel = pagedAssembler.toModel(transactionPage);
+        return ResponseEntity.ok(pagedModel);
+    }
 }

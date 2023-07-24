@@ -1,20 +1,18 @@
 package com.bbva.wallet.services;
 
-import com.bbva.wallet.dtos.DepositCreatedDTO;
-import com.bbva.wallet.dtos.PaymentCreatedDTO;
-import com.bbva.wallet.dtos.TransactionDTO;
+import com.bbva.wallet.dtos.TransactionCreatedResponse;
+import com.bbva.wallet.dtos.TransactionRequestDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import java.util.List;
-import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.exeptions.TransactionException;
 
 import java.util.Optional;
 public interface TransactionService {
-    Transaction send(TransactionDTO transactionDto, Account sourceAccount, Account destinationAccount) throws TransactionException;
-    DepositCreatedDTO deposit(Account account, Double amount) throws TransactionException;
-    PaymentCreatedDTO payment(Account sourceAccount, Double amount) throws TransactionException;
+    Transaction send(TransactionRequestDTO transactionDto, Account sourceAccount, Account destinationAccount) throws TransactionException;
+    TransactionCreatedResponse deposit(Account account, Double amount) throws TransactionException;
+    TransactionCreatedResponse payment(Account sourceAccount, Double amount) throws TransactionException;
     Optional<Transaction> findById(Long id);
     Transaction save(Transaction transaction);
-    public List<Transaction> getUserTransaction(List<Account> accounts);
+    List<Transaction> getUserTransaction(List<Account> accounts);
 }

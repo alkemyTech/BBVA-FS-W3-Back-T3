@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DepositDTO {
+public class PaymentRequestDTO {
     @NotNull
     private Double amount;
     @NotNull

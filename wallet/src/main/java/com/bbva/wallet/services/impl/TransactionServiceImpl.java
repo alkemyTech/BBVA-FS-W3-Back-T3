@@ -1,8 +1,7 @@
 package com.bbva.wallet.services.impl;
 
-import com.bbva.wallet.dtos.DepositCreatedDTO;
-import com.bbva.wallet.dtos.PaymentCreatedDTO;
-import com.bbva.wallet.dtos.TransactionDTO;
+import com.bbva.wallet.dtos.TransactionCreatedResponse;
+import com.bbva.wallet.dtos.TransactionRequestDTO;
 import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.Transaction;
 import com.bbva.wallet.enums.TypeTransaction;
@@ -21,7 +20,7 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
 
-    public Transaction send(TransactionDTO transactionDto, Account sourceAccount, Account destinationAccount) throws TransactionException {
+    public Transaction send(TransactionRequestDTO transactionDto, Account sourceAccount, Account destinationAccount) throws TransactionException {
         if (sourceAccount.getUser().equals(destinationAccount.getUser())) {
             throw new TransactionException("No se puede transferir a uno mismo", ErrorCodes.SAME_ACCOUNT_TRANSFER);
         }
@@ -59,24 +58,35 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     // ------------------------------------------Deposit--------------------------------------------------------------
-    public DepositCreatedDTO deposit(Account account, Double amount) throws TransactionException {
+    public TransactionCreatedResponse deposit(Account account, Double amount) throws TransactionException {
+        return getTransactionCreatedResponse(account, amount, TypeTransaction.DEPOSIT);
+    }
+
+    //  ------------------------------------------Payment--------------------------------------------------------------
+    public TransactionCreatedResponse payment(Account sourceAccount, Double amount) throws TransactionException {
+        if (amount > sourceAccount.getBalance()) {
+            throw new TransactionException("No se puede realizar un pago con mas dinero del que se tiene", ErrorCodes.INSUFFICIENT_FOUNDS);
+        }
+        return getTransactionCreatedResponse(sourceAccount, amount, TypeTransaction.PAYMENT);
+    }
+
+    private TransactionCreatedResponse getTransactionCreatedResponse(Account account, Double amount,
+                                                                     TypeTransaction typeTransaction) throws TransactionException {
         if (amount <= 0) {
             throw new TransactionException("El monto ingresado debe ser mayor a 0", ErrorCodes.INCORRECT_AMOUNT);
         }
-        // Crear una nueva transacción
+
         Transaction transactions = Transaction.builder()
                 .account(account)
-                .type(TypeTransaction.DEPOSIT)
+                .type(typeTransaction)
                 .amount(amount)
                 .build();
 
-        // Actualizar el balance de la cuenta
-        account.setBalance(account.getBalance() + amount);
+        account.setBalance(account.getBalance() + (typeTransaction.equals(TypeTransaction.DEPOSIT) ? amount : -amount ) );
 
-        // Guardar la transacción y actualizar la cuenta en la base de datos
         transactionRepository.save(transactions);
 
-        return DepositCreatedDTO.builder()
+        return TransactionCreatedResponse.builder()
                 .accountId(account.getId())
                 .balance(account.getBalance())
                 .currency(account.getCurrency())
@@ -84,33 +94,6 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
-    //  ------------------------------------------Payment--------------------------------------------------------------
-    public PaymentCreatedDTO payment(Account sourceAccount, Double amount) throws TransactionException {
-        if (amount <= 0) {
-            throw new TransactionException("El monto ingresado debe ser mayor a 0", ErrorCodes.INCORRECT_AMOUNT);
-        }
-        //Se deberá validar que la cuenta tiene saldo suficiente para hacer el pago
-        if (amount > sourceAccount.getBalance()) {
-            throw new TransactionException("No se puede realizar un pago con mas dinero del que se tiene", ErrorCodes.INSUFFICIENT_FOUNDS);
-        }
-        // Crear una nueva transacción
-        Transaction transactions = Transaction.builder()
-                .account(sourceAccount)
-                .type(TypeTransaction.PAYMENT)
-                .amount(amount)
-                .build();
-        // Actualizar el balance de la cuenta
-        sourceAccount.setBalance(sourceAccount.getBalance() - amount);
-        // Guardar la transacción y actualizar la cuenta en la base de datos
-        transactionRepository.save(transactions);
-
-        return PaymentCreatedDTO.builder()
-                .accountId(sourceAccount.getId())
-                .balance(sourceAccount.getBalance())
-                .currency(sourceAccount.getCurrency())
-                .amount(amount)
-                .build();
-    }
     @Override
     public Optional<Transaction> findById(Long Id) {
         return transactionRepository.findById(Id);

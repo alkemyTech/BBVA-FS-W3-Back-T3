@@ -1,6 +1,6 @@
 package com.bbva.wallet.dtos;
 
-import com.bbva.wallet.enums.Currency;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentCreatedDTO {
-    private Double amount;
-    private Currency currency;
-    private Double balance;
-    private Long accountId;
+public class AccountTransactionLimitDto {
+
+    @NotNull
+    private Double transactionLimit;
 }
