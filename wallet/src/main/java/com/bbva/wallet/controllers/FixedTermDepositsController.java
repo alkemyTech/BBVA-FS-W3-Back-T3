@@ -1,9 +1,8 @@
 package com.bbva.wallet.controllers;
 
-import com.bbva.wallet.dtos.FixedTermDepositsDTO;
-import com.bbva.wallet.dtos.FixedTermDepositsSimulationDTO;
+import com.bbva.wallet.dtos.FixedTermDepositsRequestDTO;
+import com.bbva.wallet.dtos.FixedTermDepositsResponseDTO;
 import com.bbva.wallet.entities.Account;
-import com.bbva.wallet.entities.FixedTermDeposits;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.exeptions.AccountException;
 import com.bbva.wallet.exeptions.ErrorCodes;
@@ -16,10 +15,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/fixedTerm")
@@ -32,7 +28,7 @@ public class FixedTermDepositsController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<FixedTermDeposits> createFixedTermDeposit(@Valid @RequestBody FixedTermDepositsDTO fixedTermDepositsDTO,
+    public ResponseEntity<FixedTermDepositsResponseDTO> createFixedTermDeposit(@Valid @RequestBody FixedTermDepositsRequestDTO fixedTermDepositsRequestDTO,
     Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
 
@@ -41,8 +37,8 @@ public class FixedTermDepositsController {
                         () -> new AccountException("El usuario no tiene account en esta moneda: " + currency,
                                 ErrorCodes.ACCOUNT_DOESNT_EXIST));
 
-        FixedTermDeposits fixedTermDeposits = fixedTermDepositsService.createFixedTermDeposit(
-                fixedTermDepositsDTO,
+        FixedTermDepositsResponseDTO fixedTermDeposits = fixedTermDepositsService.createFixedTermDeposit(
+                fixedTermDepositsRequestDTO,
                 account);
 
         accountService.save(account);
@@ -52,8 +48,8 @@ public class FixedTermDepositsController {
 
     @SneakyThrows
     @PostMapping("/simulate")
-    public ResponseEntity<FixedTermDepositsSimulationDTO> simulateFixedTermDeposit(@Valid @RequestBody FixedTermDepositsDTO fixedTermDepositsDTO) {
-        FixedTermDepositsSimulationDTO simulation = fixedTermDepositsService.createFixedTermDeposit(fixedTermDepositsDTO);
+    public ResponseEntity<FixedTermDepositsResponseDTO> simulateFixedTermDeposit(@Valid @RequestBody FixedTermDepositsRequestDTO fixedTermDepositsRequestDTO) {
+        FixedTermDepositsResponseDTO simulation = fixedTermDepositsService.createFixedTermDeposit(fixedTermDepositsRequestDTO);
         return ResponseEntity.ok().body(simulation);
     }
 }
