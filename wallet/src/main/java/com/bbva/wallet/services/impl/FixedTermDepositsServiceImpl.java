@@ -27,7 +27,7 @@ public class FixedTermDepositsServiceImpl implements FixedTermDepositsService {
     @Override
     public FixedTermDepositsResponseDTO createFixedTermDeposit(FixedTermDepositsRequestDTO fixedTermDepositsRequestDTO, Account account) throws FixedTermDepositsException {
         if (account.getBalance() <= fixedTermDepositsRequestDTO.getAmount()) {
-            throw new FixedTermDepositsException("Insufficient funds", ErrorCodes.INSUFFICIENT_FUNDS);
+            throw new FixedTermDepositsException("Fondos en pesos insuficientes", ErrorCodes.INSUFFICIENT_FUNDS);
         }
         FixedTermDepositsResponseDTO simulation = createFixedTermDeposit(fixedTermDepositsRequestDTO);
 
