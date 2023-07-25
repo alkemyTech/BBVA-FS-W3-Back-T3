@@ -58,20 +58,20 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     // ------------------------------------------Deposit--------------------------------------------------------------
-    public TransactionCreatedResponse deposit(Account account, Double amount) throws TransactionException {
-        return getTransactionCreatedResponse(account, amount, TypeTransaction.DEPOSIT);
+    public TransactionCreatedResponse deposit(Account account, Double amount, String description) throws TransactionException {
+        return getTransactionCreatedResponse(account, amount, TypeTransaction.DEPOSIT, description);
     }
 
     //  ------------------------------------------Payment--------------------------------------------------------------
-    public TransactionCreatedResponse payment(Account sourceAccount, Double amount) throws TransactionException {
+    public TransactionCreatedResponse payment(Account sourceAccount, Double amount,String description) throws TransactionException {
         if (amount > sourceAccount.getBalance()) {
             throw new TransactionException("No se puede realizar un pago con mas dinero del que se tiene", ErrorCodes.INSUFFICIENT_FOUNDS);
         }
-        return getTransactionCreatedResponse(sourceAccount, amount, TypeTransaction.PAYMENT);
+        return getTransactionCreatedResponse(sourceAccount, amount, TypeTransaction.PAYMENT,description);
     }
 
     private TransactionCreatedResponse getTransactionCreatedResponse(Account account, Double amount,
-                                                                     TypeTransaction typeTransaction) throws TransactionException {
+                                                                     TypeTransaction typeTransaction, String description) throws TransactionException {
         if (amount <= 0) {
             throw new TransactionException("El monto ingresado debe ser mayor a 0", ErrorCodes.INCORRECT_AMOUNT);
         }
@@ -80,6 +80,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .account(account)
                 .type(typeTransaction)
                 .amount(amount)
+                .description(description)
                 .build();
 
         account.setBalance(account.getBalance() + (typeTransaction.equals(TypeTransaction.DEPOSIT) ? amount : -amount ) );
@@ -91,6 +92,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .balance(account.getBalance())
                 .currency(account.getCurrency())
                 .amount(amount)
+                .description(description)
                 .build();
     }
 

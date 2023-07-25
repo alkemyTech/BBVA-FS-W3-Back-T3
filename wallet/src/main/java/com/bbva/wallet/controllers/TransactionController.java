@@ -61,7 +61,7 @@ public class TransactionController {
     public ResponseEntity<TransactionCreatedResponse> deposit(@Valid @RequestBody DepositRequestDTO depositDTO, Authentication authentication) {
         Account sourceAccount = getUserLoggedInAccount(authentication, depositDTO.getCurrency());
 
-        TransactionCreatedResponse depositCreatedResponse = transactionService.deposit(sourceAccount, depositDTO.getAmount());
+        TransactionCreatedResponse depositCreatedResponse = transactionService.deposit(sourceAccount, depositDTO.getAmount(), depositDTO.getDescription());
         return ResponseEntity.ok(depositCreatedResponse);
     }
     //------------------------------------------Payment--------------------------------------------------------------
@@ -70,7 +70,7 @@ public class TransactionController {
     public ResponseEntity<TransactionCreatedResponse> payment(@Valid @RequestBody PaymentRequestDTO paymentDTO, Authentication authentication) {
         Account sourceAccount = getUserLoggedInAccount(authentication, paymentDTO.getCurrency());
 
-        TransactionCreatedResponse paymentCreatedDTO = transactionService.payment(sourceAccount, paymentDTO.getAmount());
+        TransactionCreatedResponse paymentCreatedDTO = transactionService.payment(sourceAccount, paymentDTO.getAmount(), paymentDTO.getDescription());
         return ResponseEntity.ok(paymentCreatedDTO);
     }
 
