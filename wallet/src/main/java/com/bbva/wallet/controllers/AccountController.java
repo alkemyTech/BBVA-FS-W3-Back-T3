@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
 import java.util.Objects;
 
 @RestController
@@ -95,9 +94,12 @@ public class AccountController {
         return ResponseEntity.ok(pageModel);
     }
 
+    @SneakyThrows
     @GetMapping("/cbu/{cbu}")
     public ResponseEntity<Account> getAccountByCbu(@PathVariable("cbu") String cbuParameter) {
-        Optional<Account> account = accountService.getAccountByCbu(cbuParameter);
-        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Account account = accountService.getAccountByCbu(cbuParameter).orElseThrow(
+                () -> new AccountException("No se encontró cuenta con este cbu: " + cbuParameter,
+                        ErrorCodes.ACCOUNT_DOESNT_EXIST));
+        return ResponseEntity.ok(account);
     }
 }
