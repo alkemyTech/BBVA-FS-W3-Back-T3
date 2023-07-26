@@ -94,4 +94,10 @@ public class AccountController {
         PagedModel<EntityModel<Account>> pageModel = pagedAssembler.toModel(accountPage);
         return ResponseEntity.ok(pageModel);
     }
+
+    @GetMapping("/cbu/{cbu}")
+    public ResponseEntity<Account> getAccountByCbu(@PathVariable("cbu") String cbuParameter) {
+        Optional<Account> account = accountService.getAccountByCbu(cbuParameter);
+        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
