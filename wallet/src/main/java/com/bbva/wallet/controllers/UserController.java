@@ -1,13 +1,20 @@
 package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.UserEditDTO;
+import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.exeptions.ErrorCodes;
+import com.bbva.wallet.exeptions.Response;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.exeptions.UserException;
 import com.bbva.wallet.services.UserService;
 import com.bbva.wallet.services.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,6 +33,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Objects;
 
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "400", description = "Custom Error", content = {
+                @Content(schema = @Schema(implementation = Response.class), mediaType = "application/json")
+        }),
+        @ApiResponse(responseCode = "403", description = "No autenticado / Token inválido", content = {
+                @Content(schema = @Schema(implementation = Response.class), mediaType = "application/json")
+        })
+})
 @Tag(name = "Users")
 @RestController
 @RequestMapping("/users")
@@ -35,7 +50,26 @@ public class UserController {
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
 
-    @Operation(summary = "Eliminar un usuario",description = "Eliminar un usuario")
+    @Operation(
+            summary = "Eliminar un usuario",
+            description = "Eliminar un usuario",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(schema = @Schema(implementation = User.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                                    "{\n" +
+                                                            "  \"id\": 12345,\n" +
+                                                            "  \"firstName\": \"John\",\n" +
+                                                            "  \"lastName\": \"Doe\",\n" +
+                                                            "  \"email\": \"john.doe@example.com\"\n" +
+                                                            "}"))
+                            }
+                    )
+            })
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id ) {
@@ -45,7 +79,27 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Listar todos los usuarios",description = "Listar todos los usuarios")
+    @Operation(
+            summary = "Listar todos los usuarios",
+            description = "Listar todos los usuarios",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = User.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                            "{\n" +
+                                                    "  \"id\": 12345,\n" +
+                                                    "  \"firstName\": \"John\",\n" +
+                                                    "  \"lastName\": \"Doe\",\n" +
+                                                    "  \"email\": \"john.doe@example.com\"\n" +
+                                                    "}"))
+                            }
+                    )
+            })
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<User>>> getAllUser(
@@ -60,7 +114,27 @@ public class UserController {
         return ResponseEntity.ok(pageModel);
     }
 
-    @Operation(summary = "Obtener usuario",description = "Obtener usuario")
+    @Operation(
+            summary = "Obtener usuario",
+            description = "Obtener usuario",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(schema = @Schema(
+                                            implementation = User.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                            "{\n" +
+                                                    "  \"id\": 12345,\n" +
+                                                    "  \"firstName\": \"John\",\n" +
+                                                    "  \"lastName\": \"Doe\",\n" +
+                                                    "  \"email\": \"john.doe@example.com\"\n" +
+                                                    "}"))
+                            }
+                    )
+            })
     @SneakyThrows
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId")
     @GetMapping("/{id}")
@@ -71,7 +145,24 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @Operation(summary = "Editar un usuario",description = "Editar un usuario")
+    @Operation(
+            summary = "Editar un usuario",
+            description = "Editar un usuario",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(schema = @Schema(implementation = User.class), mediaType = "application/json",examples = @ExampleObject(value =
+                                            "{\n" +
+                                                    "  \"id\": 12345,\n" +
+                                                    "  \"firstName\": \"John\",\n" +
+                                                    "  \"lastName\": \"Doe\",\n" +
+                                                    "  \"email\": \"john.doe@example.com\"\n" +
+                                                    "}"))
+                            }
+                    )
+            })
     @SneakyThrows
     @PatchMapping("/{id}")
     public ResponseEntity<User> editUser(@PathVariable("id") Long id, @RequestBody UserEditDTO userEditDTO, Authentication authentication) {

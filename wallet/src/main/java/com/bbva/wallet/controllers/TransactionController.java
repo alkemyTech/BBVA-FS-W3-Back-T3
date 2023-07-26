@@ -8,10 +8,17 @@ import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.enums.RoleName;
 import com.bbva.wallet.exeptions.AccountException;
 import com.bbva.wallet.exeptions.ErrorCodes;
+import com.bbva.wallet.exeptions.Response;
 import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.AccountService;
 import com.bbva.wallet.services.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import com.bbva.wallet.utils.Utils;
 import jakarta.validation.Valid;
@@ -29,6 +36,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "400", description = "Custom Error", content = {
+                @Content(schema = @Schema(implementation = Response.class), mediaType = "application/json")
+        }),
+        @ApiResponse(responseCode = "403", description = "No autenticado / Token inválido", content = {
+                @Content(schema = @Schema(implementation = Response.class), mediaType = "application/json")
+        })
+})
 @Tag(name = "Transactions")
 @RestController
 @RequestMapping("/transactions")
@@ -38,13 +53,69 @@ public class TransactionController {
     private final AccountService accountService;
     private final Utils utils;
 
-    @Operation(summary = "Crear una transaccion en pesos",description = "Crear una transaccion en pesos")
+    @Operation(
+            summary = "Crear una transaccion en pesos",
+            description = "Crear una transaccion en pesos",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = Transaction.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                                    "{\n" +
+                                                            "  \"id\": 1,\n" +
+                                                            "  \"amount\": 500,\n" +
+                                                            "  \"type\": \"INCOME\",\n" +
+                                                            "  \"description\": \"Salary\",\n" +
+                                                            "  \"account\": {\n" +
+                                                            "    \"id\": 1,\n" +
+                                                            "    \"currency\": \"ARS\",\n" +
+                                                            "    \"transactionLimit\": 5000,\n" +
+                                                            "    \"balance\": 3000,\n" +
+                                                            "    \"cbu\": \"0123456789012345678901\"\n" +
+                                                            "  }\n" +
+                                                            "}"))
+                            }
+                    )
+            })
     @PostMapping("/sendArs")
-    public ResponseEntity<Transaction> sendArs(@RequestBody @Valid TransactionRequestDTO transactionDto, Authentication authentication) {
+    public ResponseEntity<Transaction> sendArs(@RequestBody @Valid TransactionRequestDTO transactionDto
+            , Authentication authentication) {
         return send(transactionDto, Currency.ARS, authentication);
     }
 
-    @Operation(summary = "Crear una transaccion en dolares",description = "Crear una transaccion en dolares")
+    @Operation(
+            summary = "Crear una transaccion en dolares",
+            description = "Crear una transaccion en dolares",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = Response.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                                    "{\n" +
+                                                            "  \"id\": 1,\n" +
+                                                            "  \"amount\": 500,\n" +
+                                                            "  \"type\": \"INCOME\",\n" +
+                                                            "  \"description\": \"Salary\",\n" +
+                                                            "  \"account\": {\n" +
+                                                            "    \"id\": 1,\n" +
+                                                            "    \"currency\": \"ARS\",\n" +
+                                                            "    \"transactionLimit\": 5000,\n" +
+                                                            "    \"balance\": 3000,\n" +
+                                                            "    \"cbu\": \"0123456789012345678901\"\n" +
+                                                            "  }\n" +
+                                                            "}"))
+                            }
+                    )
+
+            })
     @PostMapping("/sendUsd")
     public ResponseEntity<Transaction> sendUsd(@RequestBody @Valid TransactionRequestDTO transactionDto, Authentication authentication) {
         return send(transactionDto, Currency.USD, authentication);
@@ -61,20 +132,82 @@ public class TransactionController {
     }
 
     //------------------------------------------Deposit--------------------------------------------------------------
-    @Operation(summary = "Crear un deposito",description = "Crear un deposito")
+    @Operation(
+            summary = "Crear un deposito",
+            description = "Crear un deposito",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = Transaction.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                                    "{\n" +
+                                                            "  \"id\": 1,\n" +
+                                                            "  \"amount\": 500,\n" +
+                                                            "  \"type\": \"INCOME\",\n" +
+                                                            "  \"description\": \"Salary\",\n" +
+                                                            "  \"account\": {\n" +
+                                                            "    \"id\": 1,\n" +
+                                                            "    \"currency\": \"ARS\",\n" +
+                                                            "    \"transactionLimit\": 5000,\n" +
+                                                            "    \"balance\": 3000,\n" +
+                                                            "    \"cbu\": \"0123456789012345678901\"\n" +
+                                                            "  }\n" +
+                                                            "}")
+                                    )
+
+                            }
+                    )
+            })
     @SneakyThrows
     @PostMapping("/deposit")
-    public ResponseEntity<TransactionCreatedResponse> deposit(@Valid @RequestBody DepositRequestDTO depositDTO, Authentication authentication) {
+    public ResponseEntity<TransactionCreatedResponse> deposit(@Valid @Parameter (
+            example = "{\n" +
+                    "  \"destinationAccountId\": 124,\n" +
+                    "  \"amount\": 1000,\n" +
+                    "  \"transactionDate\": \"2023-07-26T15:31:54.800Z\",\n" +
+                    "  \"description\": \"Pago de factura\"\n" +
+                    "}")
+                                                                  @RequestBody DepositRequestDTO depositDTO, Authentication authentication) {
         Account sourceAccount = getUserLoggedInAccount(authentication, depositDTO.getCurrency());
 
         TransactionCreatedResponse depositCreatedResponse = transactionService.deposit(sourceAccount, depositDTO.getAmount());
         return ResponseEntity.ok(depositCreatedResponse);
     }
     //------------------------------------------Payment--------------------------------------------------------------
-    @Operation(summary = "Crear un pago",description = "Crear un pago")
+    @Operation(
+            summary = "Crear un pago",
+            description = "Crear un pago",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = TransactionCreatedResponse.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                                    "{\n" +
+                                                            "  \"amount\": 5000,\n" +
+                                                            "  \"currency\": \"ARS\",\n" +
+                                                            "  \"balance\": 10000,\n" +
+                                                            "  \"accountId\": 12345\n" +
+                                                            "}"))
+
+                            }
+                    )
+            })
     @SneakyThrows
     @PostMapping("/payment")
-    public ResponseEntity<TransactionCreatedResponse> payment(@Valid @RequestBody PaymentRequestDTO paymentDTO, Authentication authentication) {
+    public ResponseEntity<TransactionCreatedResponse> payment(@Valid @Parameter (
+            example = "{\n" +
+                    "  \"amount\": 200,\n" +
+                    "  \"currency\": \"ARS\"\n" +
+                    "}")
+                                                                  @RequestBody PaymentRequestDTO paymentDTO, Authentication authentication) {
         Account sourceAccount = getUserLoggedInAccount(authentication, paymentDTO.getCurrency());
 
         TransactionCreatedResponse paymentCreatedDTO = transactionService.payment(sourceAccount, paymentDTO.getAmount());
@@ -87,7 +220,34 @@ public class TransactionController {
     }
 
 
-    @Operation(summary = "Ver detalle de una transaccion",description = "Ver detalle de una transaccion")
+    @Operation(
+            summary = "Ver detalle de una transaccion",
+            description = "Ver detalle de una transaccion",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = Transaction.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                                    "{\n" +
+                                                            "  \"id\": 1,\n" +
+                                                            "  \"amount\": 500,\n" +
+                                                            "  \"type\": \"INCOME\",\n" +
+                                                            "  \"description\": \"Salary\",\n" +
+                                                            "  \"account\": {\n" +
+                                                            "    \"id\": 1,\n" +
+                                                            "    \"currency\": \"ARS\",\n" +
+                                                            "    \"transactionLimit\": 5000,\n" +
+                                                            "    \"balance\": 3000,\n" +
+                                                            "    \"cbu\": \"0123456789012345678901\"\n" +
+                                                            "  }\n" +
+                                                            "}"))
+                            }
+                    )
+            })
     @SneakyThrows
     @GetMapping("/{id}")
     public ResponseEntity<Transaction> transactionsDetails(@PathVariable("id") Long id, Authentication authentication) {
@@ -103,10 +263,41 @@ public class TransactionController {
 
 
 }
-    @Operation(summary = "Modificar una transaccion",description = "Modificar una transaccion")
+    @Operation(
+            summary = "Modificar una transaccion",
+            description = "Modificar una transaccion",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = Transaction.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                            "{\n" +
+                                                    "  \"id\": 1,\n" +
+                                                    "  \"amount\": 500,\n" +
+                                                    "  \"type\": \"INCOME\",\n" +
+                                                    "  \"description\": \"Salary\",\n" +
+                                                    "  \"account\": {\n" +
+                                                    "    \"id\": 1,\n" +
+                                                    "    \"currency\": \"ARS\",\n" +
+                                                    "    \"transactionLimit\": 5000,\n" +
+                                                    "    \"balance\": 3000,\n" +
+                                                    "    \"cbu\": \"0123456789012345678901\"\n" +
+                                                    "  }\n" +
+                                                    "}"))
+                            }
+                    )
+            })
     @SneakyThrows
     @PatchMapping("/{id}")
     public ResponseEntity<Transaction> updateTransaction(@PathVariable("id") Long id,
+                                                         @Parameter (
+                                                                 example = "{\n" +
+                                                                         "  \"description\": \"Compra de propiedad\"\n" +
+                                                                         "}")
                                                          @Valid @RequestBody TransactionDescriptionDto transactionDescriptionDto,
                                                          Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
@@ -124,7 +315,35 @@ public class TransactionController {
 
     }
 
-    @Operation(summary = "Listar todas las transacciones del usuario",description = "Listar todas las transacciones del usuario")
+    @Operation(
+            summary = "Listar todas las transacciones del usuario",
+            description = "Listar todas las transacciones del usuario",
+            responses ={
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            schema = @Schema(implementation = Transaction.class),
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value =
+                                                    "{\n" +
+                                                            "  \"id\": 1,\n" +
+                                                            "  \"amount\": 500,\n" +
+                                                            "  \"type\": \"INCOME\",\n" +
+                                                            "  \"description\": \"Salary\",\n" +
+                                                            "  \"account\": {\n" +
+                                                            "    \"id\": 1,\n" +
+                                                            "    \"currency\": \"ARS\",\n" +
+                                                            "    \"transactionLimit\": 5000,\n" +
+                                                            "    \"balance\": 3000,\n" +
+                                                            "    \"cbu\": \"0123456789012345678901\"\n" +
+                                                            "  }\n" +
+                                                            "}"))
+
+                            }
+                    )
+            })
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.getId ")
     @GetMapping("/userId/{id}")
     public ResponseEntity<PagedModel<EntityModel<Transaction>>> getUserTransactions(
