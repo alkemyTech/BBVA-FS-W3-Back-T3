@@ -10,8 +10,8 @@ import com.bbva.wallet.exeptions.TransactionException;
 import java.util.Optional;
 public interface TransactionService {
     Transaction send(TransactionRequestDTO transactionDto, Account sourceAccount, Account destinationAccount) throws TransactionException;
-    TransactionCreatedResponse deposit(Account account, Double amount) throws TransactionException;
-    TransactionCreatedResponse payment(Account sourceAccount, Double amount) throws TransactionException;
+    TransactionCreatedResponse deposit(Account account, Double amount, String description) throws TransactionException;
+    TransactionCreatedResponse payment(Account sourceAccount, Double amount, String description) throws TransactionException;
     Optional<Transaction> findById(Long id);
     Transaction save(Transaction transaction);
     List<Transaction> getUserTransaction(List<Account> accounts);

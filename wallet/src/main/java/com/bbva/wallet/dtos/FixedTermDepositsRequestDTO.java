@@ -1,18 +1,17 @@
 package com.bbva.wallet.dtos;
 
 import jakarta.validation.constraints.NotNull;
-import jdk.jfr.Timestamp;
 import lombok.Builder;
 import lombok.Data;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 @Builder
 @Data
-public class FixedTermDepositsDTO {
+public class FixedTermDepositsRequestDTO {
     @NotNull
     private Double amount;
 
     @NotNull
-    @Timestamp
-    private LocalDateTime closingDate;
+    private LocalDate closingDate;
 }

@@ -6,7 +6,6 @@ import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.services.AccountService;
 import com.bbva.wallet.services.UserService;
 import com.bbva.wallet.utils.Utils;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class AccountSeeder {
     public List<Account> seedAccounts() {
 
        List<User> users =  userSeeder.seedUsers();
-        List<Account> accounts = List.of();
+        List<Account> accounts = new java.util.ArrayList<>(List.of());
 
         if (accountService.count() != 0) {
             return accountService.findAll();

@@ -15,4 +15,5 @@ public class TransactionCreatedResponse {
     private Currency currency;
     private Double balance;
     private Long accountId;
+    private String description;
 }

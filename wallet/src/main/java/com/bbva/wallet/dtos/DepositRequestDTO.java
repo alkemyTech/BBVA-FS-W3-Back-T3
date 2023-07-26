@@ -16,4 +16,6 @@ public class DepositRequestDTO {
     private Double amount;
     @NotNull
     private Currency currency;
+    @NotNull
+    private String description;
 }
