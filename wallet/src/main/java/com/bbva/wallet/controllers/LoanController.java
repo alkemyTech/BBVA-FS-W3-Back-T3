@@ -2,7 +2,6 @@ package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.LoanRequestDTO;
 import com.bbva.wallet.dtos.LoanResponseDTO;
-import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.Response;
 import com.bbva.wallet.exeptions.TransactionException;

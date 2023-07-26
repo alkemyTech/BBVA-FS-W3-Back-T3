@@ -1,7 +1,6 @@
 package com.bbva.wallet.controllers;
 
 import com.bbva.wallet.dtos.UserEditDTO;
-import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.entities.User;
 import com.bbva.wallet.exeptions.ErrorCodes;
 import com.bbva.wallet.exeptions.Response;
@@ -61,7 +60,6 @@ public class UserController {
                                     @Content(schema = @Schema(implementation = User.class),
                                             mediaType = "application/json",
                                             examples = @ExampleObject(value =
-                                                    "{\n" +
                                                             "  \"id\": 12345,\n" +
                                                             "  \"firstName\": \"John\",\n" +
                                                             "  \"lastName\": \"Doe\",\n" +
@@ -91,7 +89,6 @@ public class UserController {
                                             schema = @Schema(implementation = User.class),
                                             mediaType = "application/json",
                                             examples = @ExampleObject(value =
-                                            "{\n" +
                                                     "  \"id\": 12345,\n" +
                                                     "  \"firstName\": \"John\",\n" +
                                                     "  \"lastName\": \"Doe\",\n" +

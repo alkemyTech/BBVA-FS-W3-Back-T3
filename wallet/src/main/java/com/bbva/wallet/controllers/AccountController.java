@@ -53,7 +53,6 @@ public class AccountController {
     @Operation(
             summary = "Ver detalle de una cuenta",
             description = "Ver detalle de una cuenta",
-
     responses ={
         @ApiResponse(
                 description = "Success",
@@ -92,41 +91,13 @@ public class AccountController {
                                     implementation = BalanceResponseDTO.class),
                                     mediaType = "application/json",
                                     examples = @ExampleObject(value =
-                                            "{\n" +
-                                                    "  \"accountArs\": 1000,\n" +
-                                                    "  \"accountUsd\": 500,\n" +
-                                                    "  \"history\": [\n" +
-                                                    "    {\n" +
-                                                    "      \"id\": 1,\n" +
-                                                    "      \"amount\": 200,\n" +
-                                                    "      \"type\": \"INCOME\",\n" +
-                                                    "      \"description\": \"Income from sale\",\n" +
-                                                    "      \"account\": {\n" +
-                                                    "        \"id\": 1,\n" +
-                                                    "        \"currency\": \"ARS\",\n" +
-                                                    "        \"transactionLimit\": 5000,\n" +
-                                                    "        \"balance\": 3000,\n" +
-                                                    "        \"cbu\": \"0123456789012345678901\"\n" +
-                                                    "      }\n" +
-                                                    "    }\n" +
-                                                    "  ],\n" +
-                                                    "  \"fixedTerms\": [\n" +
-                                                    "    {\n" +
-                                                    "      \"id\": 1,\n" +
-                                                    "      \"amount\": 1000,\n" +
-                                                    "      \"account\": {\n" +
-                                                    "        \"id\": 2,\n" +
-                                                    "        \"currency\": \"ARS\",\n" +
-                                                    "        \"transactionLimit\": 5000,\n" +
-                                                    "        \"balance\": 5000,\n" +
-                                                    "        \"cbu\": \"0987654321098765432109\"\n" +
-                                                    "      },\n" +
-                                                    "      \"interest\": 5,\n" +
-                                                    "      \"creationDate\": \"2023-07-26T14:27:23.765Z\",\n" +
-                                                    "      \"closingDate\": \"2023-08-26T14:27:23.765Z\"\n" +
-                                                    "    }\n" +
-                                                    "  ]\n" +
-                                                    "}"))
+                                    "{\n" +
+                                            "  \"id\": 1,\n" +
+                                            "  \"currency\": \"ARS\",\n" +
+                                            "  \"transactionLimit\": 5000,\n" +
+                                            "  \"balance\": 25000,\n" +
+                                            "  \"cbu\": \"0123456789012345678901\"\n" +
+                                            "}"))
 
 
 
