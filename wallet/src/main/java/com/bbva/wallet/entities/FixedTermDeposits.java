@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jdk.jfr.Timestamp;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 
 @Table(name = "fixed_term_deposits")
-
+@Where(clause = "closing_date is not null")
 public class FixedTermDeposits implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

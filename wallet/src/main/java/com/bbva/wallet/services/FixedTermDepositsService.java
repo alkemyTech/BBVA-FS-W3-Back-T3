@@ -9,4 +9,6 @@ public interface FixedTermDepositsService {
     FixedTermDepositsResponseDTO createFixedTermDeposit(FixedTermDepositsRequestDTO fixedTermDepositsRequestDTO, Account account) throws FixedTermDepositsException;
 
     FixedTermDepositsResponseDTO createFixedTermDeposit(FixedTermDepositsRequestDTO fixedTermDepositsRequestDTO) throws FixedTermDepositsException;
+
+    FixedTermDepositsResponseDTO cancelFixedTerm(Long id) throws FixedTermDepositsException;
 }

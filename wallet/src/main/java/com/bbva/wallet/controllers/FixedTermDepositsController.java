@@ -120,4 +120,11 @@ public class FixedTermDepositsController {
         FixedTermDepositsResponseDTO simulation = fixedTermDepositsService.createFixedTermDeposit(fixedTermDepositsRequestDTO);
         return ResponseEntity.ok().body(simulation);
     }
+
+    @SneakyThrows
+    @DeleteMapping("/{id}")
+    public ResponseEntity<FixedTermDepositsResponseDTO> cancelFixedTerm(@PathVariable Long id) {
+        FixedTermDepositsResponseDTO fixedTermDeposits = fixedTermDepositsService.cancelFixedTerm(id);
+        return ResponseEntity.ok().body(fixedTermDeposits);
+    }
 }
