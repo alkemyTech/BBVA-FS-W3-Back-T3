@@ -24,4 +24,5 @@ public interface AccountService {
     long count();
     List<Account> findAll();
     Page<Account> getAllAccounts(Pageable pageable);
-  }
+    Optional<Account> getAccountByCbu(String cbu);
+}

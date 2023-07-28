@@ -140,4 +140,9 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> findAll() {
         return accountRepository.findAll();
     }
+
+    @Override
+    public Optional<Account> getAccountByCbu(String cbu) {
+        return accountRepository.findByCbu(cbu);
+    }
 }

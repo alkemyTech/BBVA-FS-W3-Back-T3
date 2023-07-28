@@ -4,8 +4,7 @@
 		"name": "T3 - Wallet",
 		"description": "Caso de Negocio | Wallet | BBVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20774953",
-		"_collection_link": "https://www.postman.com/bold-equinox-852207/workspace/damian-pereyra-workspace/collection/20774953-ea175397-af91-420d-a7dd-252559fc01fd?action=share&creator=20774953&source=collection_link"
+		"_exporter_id": "16198497"
 	},
 	"item": [
 		{
@@ -411,6 +410,27 @@
 							"port": "8080",
 							"path": [
 								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account By CBU",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/accounts/cbu/8050285850367638446512",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"accounts",
+								"cbu",
+								"8050285850367638446512"
 							]
 						}
 					},

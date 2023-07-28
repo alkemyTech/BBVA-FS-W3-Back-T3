@@ -217,4 +217,13 @@ public class AccountController {
         PagedModel<EntityModel<Account>> pageModel = pagedAssembler.toModel(accountPage);
         return ResponseEntity.ok(pageModel);
     }
+
+    @SneakyThrows
+    @GetMapping("/cbu/{cbu}")
+    public ResponseEntity<Account> getAccountByCbu(@PathVariable("cbu") String cbuParameter) {
+        Account account = accountService.getAccountByCbu(cbuParameter).orElseThrow(
+                () -> new AccountException("No se encontró cuenta con este cbu: " + cbuParameter,
+                        ErrorCodes.ACCOUNT_DOESNT_EXIST));
+        return ResponseEntity.ok(account);
+    }
 }
