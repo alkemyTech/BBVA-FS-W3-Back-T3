@@ -60,7 +60,7 @@ public class AuthenticationController {
                     )
             })
     @PostMapping("/register")
-    public ResponseEntity<JwtAuthResponse> singUp (@Valid @RequestBody UserSignUpDTO userDto){
+    public ResponseEntity<JwtAuthResponse> signUp(@Valid @RequestBody UserSignUpDTO userDto) {
         return ResponseEntity.ok(authenticationService.signUp(userDto));
     }
 
@@ -91,8 +91,18 @@ public class AuthenticationController {
                     )
             })
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> LogIn (@Valid @RequestBody UserLogInDTO userDto){
+    public ResponseEntity<JwtAuthResponse> logIn(@Valid @RequestBody UserLogInDTO userDto) {
         return ResponseEntity.ok(authenticationService.logIn(userDto));
     }
-}
 
+    @SneakyThrows
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthResponse> refresh(@RequestHeader("Authorization") String refreshToken) {
+        JwtAuthResponse response = authenticationService.refreshToken(refreshToken);
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().build(); // Or return an appropriate error response
+        }
+    }
+}

@@ -37,7 +37,7 @@ public class Transaction implements Serializable {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
-    @JsonIgnore
+
     @UpdateTimestamp
     private LocalDateTime transactionDate;
 

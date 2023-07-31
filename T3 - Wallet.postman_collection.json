@@ -59,7 +59,8 @@
 							"script": {
 								"exec": [
 									"var res = pm.response.json();",
-									"pm.environment.set('token', res.token);"
+									"pm.environment.set('token', res.token);",
+									"pm.environment.set('refreshToken', res.refreshToken);"
 								],
 								"type": "text/javascript"
 							}
@@ -90,6 +91,50 @@
 							"path": [
 								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('token', res.token);\r",
+									"pm.environment.set('refreshToken', res.refreshToken);\r",
+									"console.log(res);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{refreshToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/auth/refresh/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"refresh",
+								""
 							]
 						}
 					},
@@ -397,42 +442,10 @@
 					"response": []
 				},
 				{
-					"name": "GetAllAccounts",
+					"name": "Get Accounts",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/accounts",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"accounts"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Account By CBU",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/accounts/cbu/8050285850367638446512",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"accounts",
-								"cbu",
-								"8050285850367638446512"
-							]
-						}
+						"header": []
 					},
 					"response": []
 				}
@@ -856,6 +869,70 @@
 							"path": [
 								"loan",
 								"simulate"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "/trading",
+			"item": [
+				{
+					"name": "SimulateDollarPurchase",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dollarType\": \"OFICIAL\",\r\n  \"amountInPesos\": 10000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/trading/simulateDollarPurchase",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"trading",
+								"simulateDollarPurchase"
 							]
 						}
 					},

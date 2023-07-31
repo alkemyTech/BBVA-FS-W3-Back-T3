@@ -52,9 +52,7 @@ public class AuthenticationService {
         accountService.createAccount(Currency.ARS, user);
         accountService.createAccount(Currency.USD, user);
 
-        var jwt = jwtService.generateToken(user);
-        return JwtAuthResponse.builder().token(jwt).user(user).build();
-
+        return jwtService.generateToken(user);
     }
 
     public JwtAuthResponse logIn(UserLogInDTO userLogInDTO) throws UserException {
@@ -70,8 +68,15 @@ public class AuthenticationService {
             throw new UserException(message, errorCode);
         }
 
-        var jwt = jwtService.generateToken(user.get());
-        return JwtAuthResponse.builder().token(jwt).user(user.get()).build();
+        return jwtService.generateToken(user.get());
 
+    }
+
+    public JwtAuthResponse refreshToken(String refreshToken) throws UserException {
+        String username = jwtService.extractUsername(refreshToken);
+
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new UserException("User not found", ErrorCodes.USER_NOT_FOUND));
+
+        return jwtService.generateToken(user);
     }
 }

@@ -3,6 +3,7 @@ package com.bbva.wallet.controllers;
 import com.bbva.wallet.dtos.FixedTermDepositsRequestDTO;
 import com.bbva.wallet.dtos.FixedTermDepositsResponseDTO;
 import com.bbva.wallet.entities.Account;
+import com.bbva.wallet.entities.FixedTermDeposits;
 import com.bbva.wallet.enums.Currency;
 import com.bbva.wallet.exeptions.AccountException;
 import com.bbva.wallet.exeptions.ErrorCodes;
@@ -100,7 +101,7 @@ public class FixedTermDepositsController {
                             description = "Success",
                             responseCode = "200",
                             content = {
-                                    @Content(schema = @Schema(implementation = FixedTermDepositsSimulationDTO.class),
+                                    @Content(schema = @Schema(implementation = FixedTermDepositsResponseDTO.class),
                                             mediaType = "application/json",
                                             examples = @ExampleObject(value =
                                             "{\n" +
