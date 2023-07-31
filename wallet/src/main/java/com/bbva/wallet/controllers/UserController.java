@@ -164,13 +164,20 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<User> editUser(@PathVariable("id") Long id, @RequestBody UserEditDTO userEditDTO, Authentication authentication) {
         User userLoggedIn = (User) authentication.getPrincipal();
-        User user= userService.findById(id).orElseThrow(() -> new TransactionException("No existe el usuario indicado ", ErrorCodes.USER_DOESNT_EXIST));
+        User user = userService.findById(id).orElseThrow(() -> new TransactionException("No existe el usuario indicado ", ErrorCodes.USER_DOESNT_EXIST));
         if (!Objects.equals(user.getId(), userLoggedIn.getId())){
             throw new UserException("No se puede editar un usuario ajeno ", ErrorCodes.USER_DOESNT_EXIST);
         }
-        user.setFirstName(userEditDTO.getFirstName());
-        user.setLastName(userEditDTO.getLastName());
-        user.setPassword(passwordEncoder.encode(userEditDTO.getPassword()));
+
+        user.setFirstName(
+                (userEditDTO.getFirstName() != null) ? userEditDTO.getFirstName() : user.getFirstName()
+        );
+        user.setLastName(
+                (userEditDTO.getLastName() != null) ? userEditDTO.getLastName() : user.getLastName()
+        );
+        user.setPassword(
+                (userEditDTO.getPassword() != null) ? passwordEncoder.encode(userEditDTO.getPassword()) : user.getPassword()
+        );
         userService.save(user);
         return ResponseEntity.ok(user);
     }
