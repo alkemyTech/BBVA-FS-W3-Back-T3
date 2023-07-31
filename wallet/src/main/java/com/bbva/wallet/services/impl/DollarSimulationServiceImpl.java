@@ -3,8 +3,11 @@ package com.bbva.wallet.services.impl;
 import com.bbva.wallet.dtos.DollarApiResponse;
 import com.bbva.wallet.dtos.DollarSimulationDTO;
 import com.bbva.wallet.dtos.DollarSimulationResultDTO;
+import com.bbva.wallet.entities.Account;
 import com.bbva.wallet.enums.DollarType;
+import com.bbva.wallet.exeptions.TransactionException;
 import com.bbva.wallet.services.DollarSimulationService;
+import com.bbva.wallet.services.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 
 public class DollarSimulationServiceImpl implements DollarSimulationService {
-
+    private final TransactionService transactionService;
     private final String apiUrl = "https://api.bluelytics.com.ar/v2/latest";
     private final RestTemplate restTemplate;
 
@@ -44,6 +47,17 @@ public class DollarSimulationServiceImpl implements DollarSimulationService {
                 roundDecimalValue(amountInDollars, 2)
         );
     }
+
+    @Override
+    public DollarSimulationResultDTO dollarTransaction(DollarSimulationDTO dto, Account accountArs, Account accountUsd) throws TransactionException {
+        DollarSimulationResultDTO purchase = simulateDollarTransaction(dto);
+        // create payment transaction for pesos account
+        transactionService.payment(accountArs, dto.getAmountInPesos(), "Compra de dólares");
+        // create deposit transaction for dollar account
+        transactionService.deposit(accountUsd, purchase.getAmountInDollars(), "Compra de dólares");
+        return purchase;
+    }
+
     private double getDollarValueByType(DollarApiResponse response, DollarType dollarType) {
         if (Objects.requireNonNull(dollarType) == DollarType.OFICIAL) {
             return response.getOfficial().getValueSell();
