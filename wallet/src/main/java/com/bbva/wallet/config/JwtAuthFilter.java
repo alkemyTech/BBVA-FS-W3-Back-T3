@@ -2,6 +2,8 @@ package com.bbva.wallet.config;
 
 import com.bbva.wallet.services.AuthorizationService;
 import com.bbva.wallet.services.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -38,22 +39,34 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        if (StringUtils.isNotEmpty(userEmail)
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = authorizationService.userDetailsService()
-                    .loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                context.setAuthentication(authToken);
-                SecurityContextHolder.setContext(context);
+        try {
+            userEmail = jwtService.extractUsername(jwt);
+            if (StringUtils.isNotEmpty(userEmail)
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = authorizationService.userDetailsService()
+                        .loadUserByUsername(userEmail);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    SecurityContext context = SecurityContextHolder.createEmptyContext();
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    context.setAuthentication(authToken);
+                    SecurityContextHolder.setContext(context);
+                }
             }
+        } catch (ExpiredJwtException e) {
+            // Handle JWT expiration here (e.g., return 401 Unauthorized)
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("JWT expired");
+            return;
+        } catch (JwtException e) {
+            // Handle other JWT exceptions here (e.g., return 400 Bad Request)
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("JWT exception");
+            return;
         }
+
         filterChain.doFilter(request, response);
     }
-
 }
 
