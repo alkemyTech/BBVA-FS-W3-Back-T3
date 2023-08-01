@@ -16,4 +16,5 @@ public class UserEditDTO {
     private String lastName;
 
     private String password;
+    private String oldPassword;
 }
