@@ -169,6 +169,15 @@ public class UserController {
             throw new UserException("No se puede editar un usuario ajeno ", ErrorCodes.USER_DOESNT_EXIST);
         }
 
+        if(userEditDTO.getOldPassword() != null && userEditDTO.getPassword() != null){
+            if(!passwordEncoder.matches(userEditDTO.getOldPassword(), user.getPassword())){
+                throw new UserException("La contraseña actual no coincide ", ErrorCodes.USER_DOESNT_EXIST);
+            }
+            if(userEditDTO.getOldPassword().equals(userEditDTO.getPassword())){
+                throw new UserException("La contraseña nueva no puede ser igual a la actual ", ErrorCodes.USER_DOESNT_EXIST);
+            }
+        }
+
         user.setFirstName(
                 (userEditDTO.getFirstName() != null) ? userEditDTO.getFirstName() : user.getFirstName()
         );
