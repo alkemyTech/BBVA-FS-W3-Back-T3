@@ -33,8 +33,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "Custom Error", content = {
@@ -350,14 +353,43 @@ public class TransactionController {
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "asc") String orderBy,
+            @RequestParam(required = false) String currency,
             PagedResourcesAssembler<Transaction> pagedAssembler) {
 
         List<Account> accounts = accountService.findByUserId(id);
         Iterable<Transaction> transactions = transactionService.getUserTransaction(accounts);
 
+        // Filter transactions based on the 'currency' parameter
+        if (currency != null && !currency.isEmpty()) {
+            transactions = filterTransactionsByCurrency(transactions, currency);
+        }
+
+        // Sort transactions based on the 'orderBy' parameter
+        transactions = sortTransactions(transactions, orderBy);
+
         Page<Transaction> transactionPage = utils.paginateTransactions(transactions, page, size);
 
         PagedModel<EntityModel<Transaction>> pagedModel = pagedAssembler.toModel(transactionPage);
         return ResponseEntity.ok(pagedModel);
+    }
+
+    private Iterable<Transaction> filterTransactionsByCurrency(Iterable<Transaction> transactions, String currency) {
+        List<Transaction> filteredTransactions = StreamSupport.stream(transactions.spliterator(), false)
+                .filter(transaction -> currency.equals(transaction.getAccount().getCurrency().name()))
+                .collect(Collectors.toList());
+        return filteredTransactions;
+    }
+
+    private Iterable<Transaction> sortTransactions(Iterable<Transaction> transactions, String orderBy) {
+        // Assuming Transaction has a 'transactionDate' field, you can use a custom Comparator to sort by date.
+        Comparator<Transaction> comparator = Comparator.comparing(Transaction::getTransactionDate);
+        if ("desc".equalsIgnoreCase(orderBy)) {
+            comparator = comparator.reversed();
+        }
+        List<Transaction> sortedTransactions = StreamSupport.stream(transactions.spliterator(), false)
+                .sorted(comparator)
+                .collect(Collectors.toList());
+        return sortedTransactions;
     }
 }
