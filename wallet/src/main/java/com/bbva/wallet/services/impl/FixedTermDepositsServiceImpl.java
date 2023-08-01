@@ -63,4 +63,22 @@ public class FixedTermDepositsServiceImpl implements FixedTermDepositsService {
                 )
                 .build();
     }
+
+    @Override
+    public FixedTermDepositsResponseDTO cancelFixedTerm(Long id) throws FixedTermDepositsException{
+        FixedTermDeposits fixedTermDeposits = fixedTermDepositsRepository.findById(id).orElseThrow(
+                () -> new FixedTermDepositsException("No se encontró el plazo fijo", ErrorCodes.FIXED_TERM_NOT_FOUND));
+
+        fixedTermDeposits.getAccount().setBalance(fixedTermDeposits.getAccount().getBalance() + fixedTermDeposits.getAmount());
+        fixedTermDeposits.setClosingDate(null);
+        fixedTermDepositsRepository.save(fixedTermDeposits);
+
+        return FixedTermDepositsResponseDTO.builder()
+                .amount(fixedTermDeposits.getAmount())
+                .interest(fixedTermDeposits.getInterest())
+                .closingDate(null)
+                .creationDate(LocalDate.from(fixedTermDeposits.getCreationDate()))
+                .total(fixedTermDeposits.getAmount())
+                .build();
+    }
 }
